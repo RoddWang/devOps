@@ -357,16 +357,5 @@
 		</plugins>
 
 	</build>
-	 <distributionManagement>
-        <repository>
-            <id>wstax-work</id>
-            <name>Nexus Release Repository</name>
-            <url>http://c4t12895.itcs.hpecorp.net:8080/nexus/content/groups/hpit/</url>
-        </repository>
-        <snapshotRepository>
-            <id>wstax-work</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>http://c4t12895.itcs.hpecorp.net:8080/nexus/content/groups/hpit/</url>
-        </snapshotRepository>
-    </distributionManagement>
+	
 </project>
