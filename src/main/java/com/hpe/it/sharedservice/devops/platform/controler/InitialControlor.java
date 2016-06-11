@@ -16,7 +16,7 @@ public class InitialControlor {
 	public Map<String,String> init(){
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("adf", "asdfeaegas");
-		System.out.println("fasdfasfppppppppp----------1111--");
+		System.out.println("fasdfasfppppppppp--------2222--1111--");
 		return result;
 	}
 }
