@@ -78,11 +78,11 @@
 	</profiles>
 
 	<dependencies>
-		<!-- <dependency>
+		<dependency>
 			<groupId>nl.tudelft</groupId>
 			<artifactId>jenkins-ws-client</artifactId>
 			<version>0.12-SNAPSHOT</version>
-		</dependency> -->
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>

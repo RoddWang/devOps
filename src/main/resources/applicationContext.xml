@@ -9,7 +9,7 @@
             http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
 	default-autowire="byName" default-lazy-init="false">
 
-	
+
 	<!-- For mail settings and future properties files -->
 	<bean id="propertyConfigurer"
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -35,7 +35,18 @@
 		<constructor-arg index="2" value="${redis.port}" />
 	</bean>
 
+	<bean id="dbTemp"
+		class="com.hpe.it.sharedservice.devops.platform.utils.mongo.MongoDBTemplate">
+		<property name="mongoServer" value="${jdbc.mongo.mongoServer}" />
+		<property name="serverPort" value="20001" />
+		<property name="dbName" value="${jdbc.mongo.dbName}" />
+		<property name="userName" value="${jdbc.mongo.userName}" />
+		<property name="password" value="${jdbc.mongo.password}" />
+	</bean>
 
+	<bean id="jenkinsService"
+		class="com.hpe.it.sharedservice.devops.platform.service.JenkinsService">
+	</bean>
 
 	<!-- Activates scanning of @Autowired -->
 	<context:annotation-config />
