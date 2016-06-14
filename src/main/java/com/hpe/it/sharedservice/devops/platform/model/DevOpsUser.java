@@ -1,15 +1,24 @@
 package com.hpe.it.sharedservice.devops.platform.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import nl.tudelft.jenkins.auth.User;
 import nl.tudelft.jenkins.auth.UserImpl;
 
-public class PlatformUser {
+public class DevOpsUser {
+	private String _id;
 	private String name;
 	private String email;
-	private List<Application> apps;
+	private List<String> appsUuid;
+	
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -26,20 +35,19 @@ public class PlatformUser {
 		this.email = email;
 	}
 
-	
-	public List<Application> getApps() {
-		return apps;
+	public List<String> getAppsUuid() {
+		return appsUuid;
 	}
 
-	public void setApps(List<Application> apps) {
-		this.apps = apps;
+	public void setAppsUuid(List<String> appsUuid) {
+		this.appsUuid = appsUuid;
 	}
 
-	public static User toJenkinsUser(PlatformUser devopsUser) {
+	public static User toJenkinsUser(DevOpsUser devopsUser) {
 		return new UserImpl(devopsUser.name, devopsUser.email);
 	}
 
-	public static List<User> toJenkinsUserList(List<PlatformUser> devopsUsers) {
+/*	public static List<User> toJenkinsUserList(List<PlatformUser> devopsUsers) {
 		List<User> users = new ArrayList<User>();
 		if (devopsUsers != null) {
 			for (PlatformUser devopsUser : devopsUsers) {
@@ -48,5 +56,5 @@ public class PlatformUser {
 		}
 
 		return users;
-	}
+	}*/
 }

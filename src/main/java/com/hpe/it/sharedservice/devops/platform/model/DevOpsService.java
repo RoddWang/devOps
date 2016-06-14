@@ -1,25 +1,15 @@
 package com.hpe.it.sharedservice.devops.platform.model;
 
-import java.util.List;
-
-
-public class Service {
-	private String uuid;
+public class DevOpsService {
+	private String _id;
 	private String serviceName;
 	private SCM scm;
-	private List<PlatformUser> owners;
 	
-	public String getUuid() {
-		return uuid;
+	public String get_id() {
+		return _id;
 	}
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
-	public List<PlatformUser> getOwners() {
-		return owners;
-	}
-	public void setOwners(List<PlatformUser> owners) {
-		this.owners = owners;
+	public void set_id(String _id) {
+		this._id = _id;
 	}
 	public String getServiceName() {
 		return serviceName;
