@@ -6,34 +6,34 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
-import com.hpe.it.sharedservice.devops.platform.model.DevOpsApplication;
+import com.hpe.it.sharedservice.devops.platform.model.DevOpsProject;
 import com.hpe.it.sharedservice.devops.platform.utils.mongo.CustomizedJSONDataDao;
 import com.mongodb.BasicDBObject;
 
-@Repository("devOpsApplicationDao")
-public class DevOpsApplicationDao extends CustomizedJSONDataDao<DevOpsApplication> {
+@Repository("devOpsProjectDao")
+public class DevOpsProjectDao extends CustomizedJSONDataDao<DevOpsProject> {
 
 	@Override
-	public Class<DevOpsApplication> getTClass() {
+	public Class<DevOpsProject> getTClass() {
 		// TODO Auto-generated method stub
-		return DevOpsApplication.class;
+		return DevOpsProject.class;
 	}
 
 	@Override
 	public String getCollectionName() {
 		// TODO Auto-generated method stub
-		return "DevOpsApplication";
+		return "DevOpsProject";
 	}
 	
 	/**
-	 * Get single DevOpsApplication by id
+	 * Get single DevOpsProject by id
 	 * @param id
-	 * @return DevOpsApplication
+	 * @return DevOpsProject
 	 */
-	public DevOpsApplication getDevOpsApplicationById(String id){
+	public DevOpsProject getDevOpsProjectById(String id){
 		BasicDBObject conditionDBObject = new BasicDBObject();
 		conditionDBObject.append("_id", id);
-		List<DevOpsApplication> appConfs = getItems(conditionDBObject, null, null);
+		List<DevOpsProject> appConfs = getItems(conditionDBObject, null, null);
 		if (appConfs != null && appConfs.size() > 0) {
 			return appConfs.get(0);
 		} else {
@@ -42,16 +42,16 @@ public class DevOpsApplicationDao extends CustomizedJSONDataDao<DevOpsApplicatio
 	}
 	
 	/**
-	 * Get single DevOpsApplication by id list
+	 * Get list DevOpsProject by id list
 	 * @param id
-	 * @return List<DevOpsApplication>
+	 * @return List<DevOpsProject>
 	 */
-	public List<DevOpsApplication> getDevOpsApplicationByIdList(List<String> ids){
-		List<DevOpsApplication> result = new ArrayList<DevOpsApplication>(ids.size());
+	public List<DevOpsProject> getDevOpsProjectByIdList(List<String> ids){
+		List<DevOpsProject> result = new ArrayList<DevOpsProject>(ids.size());
 		for (String id : ids) {
 			BasicDBObject conditionDBObject = new BasicDBObject();
 			conditionDBObject.append("_id", id);
-			List<DevOpsApplication> appConfs = getItems(conditionDBObject, null, null);
+			List<DevOpsProject> appConfs = getItems(conditionDBObject, null, null);
 			result.addAll(appConfs);
 		}
 		return result;
@@ -59,11 +59,22 @@ public class DevOpsApplicationDao extends CustomizedJSONDataDao<DevOpsApplicatio
 	}
 
 	/**
+	 * Get all Application
+	 * @param id
+	 * @return List<DevOpsProject>
+	 */
+	public List<DevOpsProject> getAllDevOpsProject(){
+		List<DevOpsProject> result = new ArrayList<DevOpsProject>();
+		List<DevOpsProject> projects = getItems(null, null, null);
+		result.addAll(projects);
+		return result;
+	}
+	/**
 	 * remove application against the _id
 	 * @param _id Application id to be updated
 	 * @return true if success
 	 */
-	public boolean removeApplication(String _id){
+	public boolean removeProject(String _id){
 		BasicDBObject conditionDBObject = new BasicDBObject();
 		conditionDBObject.append("_id", _id);
 		int condDBObject = removeDBObject(conditionDBObject);
@@ -78,14 +89,14 @@ public class DevOpsApplicationDao extends CustomizedJSONDataDao<DevOpsApplicatio
 	 * @param app Application to be updated
 	 * @return true if success
 	 */
-	public boolean updateApplication(DevOpsApplication app){
-		if(app==null||StringUtils.isBlank(app.get_id())){
+	public boolean updateProject(DevOpsProject project){
+		if(project==null||StringUtils.isBlank(project.get_id())){
 			return false;
 		}
 		BasicDBObject conditionDBObject = new BasicDBObject();
-		conditionDBObject.append("_id", app.get_id());
+		conditionDBObject.append("_id", project.get_id());
 		int condDBObject = updateSingleDBObject(conditionDBObject,
-				app);
+				project);
 		if (condDBObject > 0)
 			return true;
 		else

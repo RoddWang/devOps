@@ -23,6 +23,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
     <filter-name>exportFilter</filter-name>
     <filter-class>org.displaytag.filter.ResponseOverrideFilter</filter-class>
   </filter>
+  
+  <filter>
+    <filter-name>cors</filter-name>
+    <filter-class>com.hpe.it.sharedservice.devops.platform.filter.CORSFilter</filter-class>
+  </filter>
 
   <filter-mapping>
     <filter-name>encodingFilter</filter-name>
@@ -33,6 +38,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http:/
     <filter-name>exportFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+  
+  <filter-mapping>
+    <filter-name>cors</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>

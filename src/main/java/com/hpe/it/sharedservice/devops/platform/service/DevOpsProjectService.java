@@ -13,50 +13,59 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hpe.it.sharedservice.devops.platform.dao.DevOpsApplicationDao;
+import com.hpe.it.sharedservice.devops.platform.dao.DevOpsProjectDao;
 import com.hpe.it.sharedservice.devops.platform.model.DevOpsApplication;
-import com.hpe.it.sharedservice.devops.platform.model.DevOpsService;
+import com.hpe.it.sharedservice.devops.platform.model.DevOpsProject;
 
 @Service
-public class DevOpsApplicationService {
-	private static Log LOG = LogFactory.getLog(DevOpsApplicationService.class);
+public class DevOpsProjectService {
+	private static Log LOG = LogFactory.getLog(DevOpsProjectService.class);
 	@Autowired
-	private DevOpsApplicationDao devopsApplicationDao;
+	private DevOpsProjectDao devOpsProjectDao;
 	@Autowired
 	private JenkinsService jenkinsService;
 
 	/**
-	 * Get single DevOpsApplication by id
+	 * Get single DevOpsProject by id
 	 * 
 	 * @param _id
-	 * @return DevOpsApplication
+	 * @return DevOpsProject
 	 */
-	public DevOpsApplication getApplicationById(String _id) {
-		return devopsApplicationDao.getDevOpsApplicationById(_id);
+	public DevOpsProject getProjectById(String _id) {
+		return devOpsProjectDao.getDevOpsProjectById(_id);
 	}
 	
 	/**
-	 * Get single DevOpsApplication by id list
+	 * Get single DevOpsProject by id list
 	 * 
 	 * @param _id
-	 * @return DevOpsApplication
+	 * @return DevOpsProject
 	 */
-	public List<DevOpsApplication> getApplicationByIdList(List<String> ids){
-		return devopsApplicationDao.getDevOpsApplicationByIdList(ids);
+	public List<DevOpsProject> getProjectByIdList(List<String> ids){
+		return devOpsProjectDao.getDevOpsProjectByIdList(ids);
 	}
 
+	/**
+	 * Get single DevOpsProject by id list
+	 * 
+	 * @param _id
+	 * @return DevOpsProject
+	 */
+	public List<DevOpsProject> getAllProjects(){
+		return devOpsProjectDao.getAllDevOpsProject();
+	}
 	/**
 	 * create a new application
 	 * 
 	 * @param application
 	 * @throws Exception
 	 */
-	public void createApplication(DevOpsApplication application)
+	public void createProject(DevOpsProject application)
 			throws Exception {
 		if (StringUtils.isBlank(application.get_id())) {
 			throw new Exception("aplication._id can not be blank");
 		}
-		devopsApplicationDao.saveNewObject(application);
+		devOpsProjectDao.saveNewObject(application);
 	}
 
 	/**
@@ -65,8 +74,8 @@ public class DevOpsApplicationService {
 	 * @param _id
 	 * @return true if success
 	 */
-	public boolean deleteApplication(String _id) {
-		return devopsApplicationDao.removeApplication(_id);
+	public boolean deleteProject(String _id) {
+		return devOpsProjectDao.removeProject(_id);
 	}
 
 	/**
@@ -75,11 +84,11 @@ public class DevOpsApplicationService {
 	 * @param app
 	 * @return true if success
 	 */
-	public boolean updateApplication(DevOpsApplication app) {
-		if (StringUtils.isBlank(app.get_id())) {
+	public boolean updateProject(DevOpsProject project) {
+		if (StringUtils.isBlank(project.get_id())) {
 			return false;
 		} else {
-			return devopsApplicationDao.updateApplication(app);
+			return devOpsProjectDao.updateProject(project);
 		}
 	}
 
@@ -91,22 +100,22 @@ public class DevOpsApplicationService {
 	 * @return
 	 * @throws MalformedURLException
 	 */
-	public boolean appendService(DevOpsService service, String appId) {
-		DevOpsApplication app =null;
+	public boolean appendApplication(DevOpsApplication application, String appId) {
+		DevOpsProject app =null;
 		try {
 			List<User> owners = new ArrayList<User>();
 			owners.add(new UserImpl("guanx", "xiang.guan@hpe.com"));
-			jenkinsService.createJob(service, owners);
-			app = devopsApplicationDao
-					.getDevOpsApplicationById(appId);
+			jenkinsService.createJob(application, owners);
+			app = devOpsProjectDao
+					.getDevOpsProjectById(appId);
 			if (app == null) {
 				return false;
 			}
 		} catch (MalformedURLException e) {
 			LOG.error("Error occures when create jenkins job", e);
-			jenkinsService.retrieveJob(service);
+			jenkinsService.retrieveJob(application);
 			return false;
 		}
-		return devopsApplicationDao.updateApplication(app);
+		return devOpsProjectDao.updateProject(app);
 	}
 }

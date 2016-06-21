@@ -1,13 +1,9 @@
 package com.hpe.it.sharedservice.devops.platform.controler;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-import nl.tudelft.jenkins.auth.User;
-import nl.tudelft.jenkins.auth.UserImpl;
-import nl.tudelft.jenkins.jobs.Job;
+
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,56 +16,52 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hpe.it.sharedservice.devops.platform.model.DevOpsApplication;
-import com.hpe.it.sharedservice.devops.platform.model.DevOpsService;
+import com.hpe.it.sharedservice.devops.platform.model.DevOpsProject;
 import com.hpe.it.sharedservice.devops.platform.model.Result;
 import com.hpe.it.sharedservice.devops.platform.model.Result.Status;
-import com.hpe.it.sharedservice.devops.platform.service.DevOpsApplicationService;
-import com.hpe.it.sharedservice.devops.platform.service.JenkinsService;
+import com.hpe.it.sharedservice.devops.platform.service.DevOpsProjectService;
 
 @Controller
-@RequestMapping("/api/app")
-public class AppControler {
+@RequestMapping("/api/project")
+public class ProjectControler {
 
 	private Log LOG = LogFactory.getLog(getClass());
 	@Autowired
-	private DevOpsApplicationService devOpsApplicationService;
+	private DevOpsProjectService devOpsProjectService;
 
 	@ResponseBody()
-	@RequestMapping("/")
+	@RequestMapping("/list")
 	public Result getAllApp() {
-		System.out.println("asdfasf");
 		Result result = new Result();
-		List<String> ids = new ArrayList<String>();
-		ids.add("0af0df8c-7fe2-4504-a068-4971a49c0f72");
 		result.setStatus(Status.SUCCESS);
-		result.setResultData(devOpsApplicationService.getApplicationByIdList(ids));
+		result.setResultData(devOpsProjectService.getAllProjects());
 		return result;
 		
 	}
-
+	
 	@ResponseBody()
 	@RequestMapping(value = "/create", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
-	public Result create(@RequestBody DevOpsApplication app) {
-		LOG.info("Saving application:_id=" + app.getName());
+	public Result create(@RequestBody DevOpsProject project) {
+		LOG.info("Saving application:_id=" + project.getName());
 		Result result = new Result();
 		try {
-			app.set_id(UUID.randomUUID().toString());
-			devOpsApplicationService.createApplication(app);
+			project.set_id(UUID.randomUUID().toString());
+			devOpsProjectService.createProject(project);
 		} catch (Exception e) {
 			result.setMsg(e.getMessage());
 			result.setStatus(Status.ERROR);
 			LOG.error("Saving application failed");
 		}
-		result.setResultData(app);
+		result.setResultData(project);
 		return result;
 	}
 
 	@ResponseBody()
 	@RequestMapping(value = "/remove", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
-	public Result remove(String appId) {
-		LOG.info("removing application:_id=" + appId);
+	public Result remove(String projectId) {
+		LOG.info("removing project:_id=" + projectId);
 		Result result = new Result();
-		if (!devOpsApplicationService.deleteApplication(appId)) {
+		if (!devOpsProjectService.deleteProject(projectId)) {
 			result.setStatus(Status.ERROR);
 			LOG.info("removing application failed");
 		}
@@ -85,18 +77,18 @@ public class AppControler {
 	 */
 	@ResponseBody()
 	@RequestMapping(value = "/{appId}/addService", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
-	public Result addService(@PathVariable String appId,
-			@RequestBody DevOpsService service) throws MalformedURLException {
+	public Result addService(@PathVariable String projectId,
+			@RequestBody DevOpsApplication app) throws MalformedURLException {
 		Result result = new Result();
 		UUID uuid = UUID.randomUUID();
-		service.set_id(uuid.toString());
-		if (!devOpsApplicationService.appendService(service, appId)) {
+		app.set_id(uuid.toString());
+		if (!devOpsProjectService.appendApplication(app, projectId)) {
 			result.setStatus(Status.ERROR);
 			result.setMsg("Can not create service");
 			LOG.warn("Can not create service");
 		} else {
 			result.setStatus(Status.SUCCESS);
-			result.setResultData(service);
+			result.setResultData(app);
 			LOG.info("Create service successfully");
 		}
 

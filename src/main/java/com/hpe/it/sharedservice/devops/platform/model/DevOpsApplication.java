@@ -1,12 +1,9 @@
 package com.hpe.it.sharedservice.devops.platform.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DevOpsApplication {
 	private String _id;
-	private String name;
-	private List<DevOpsService> services;
+	private String applicationName;
+	private SCM scm;
 	
 	public String get_id() {
 		return _id;
@@ -14,29 +11,17 @@ public class DevOpsApplication {
 	public void set_id(String _id) {
 		this._id = _id;
 	}
-	public List<DevOpsService> getServices() {
-		return services;
+
+	public String getApplicationName() {
+		return applicationName;
 	}
-	public void setServices(List<DevOpsService> services) {
-		this.services = services;
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
 	}
-	
-	
-	public String getName() {
-		return name;
+	public SCM getScm() {
+		return scm;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setScm(SCM scm) {
+		this.scm = scm;
 	}
-	/**
-	 * Add a new Service to the application
-	 * @param service
-	 */
-	public void addDevOpsService(DevOpsService service){
-		if(this.services==null){
-			this.services = new ArrayList<DevOpsService>();
-		}
-		this.services.add(service);
-	}
-	
 }

@@ -17,7 +17,7 @@ import nl.tudelft.jenkins.jobs.ScmConfig;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.hpe.it.sharedservice.devops.platform.model.DevOpsService;
+import com.hpe.it.sharedservice.devops.platform.model.DevOpsApplication;
 
 public class JenkinsService {
 	private static Log LOG = LogFactory.getLog(JenkinsService.class);
@@ -39,7 +39,7 @@ public class JenkinsService {
 		}
 	}
 
-	public Job createJob(DevOpsService service, List<User> owners)
+	public Job createJob(DevOpsApplication service, List<User> owners)
 			throws MalformedURLException {
 		ScmConfig scmConfig = null;
 		switch (service.getScm().getScmType()) {
@@ -53,7 +53,7 @@ public class JenkinsService {
 			break;
 		}
 
-		final Job job = client.createJob(service.getServiceName(), scmConfig,
+		final Job job = client.createJob(service.getApplicationName(), scmConfig,
 				owners);
 		return job;
 	}
@@ -63,8 +63,8 @@ public class JenkinsService {
 	 * 
 	 * @return
 	 */
-	public void retrieveJob(DevOpsService service) {
-		client.retrieveJob(service.getServiceName());
+	public void retrieveJob(DevOpsApplication service) {
+		client.retrieveJob(service.getApplicationName());
 	}
 
 }
