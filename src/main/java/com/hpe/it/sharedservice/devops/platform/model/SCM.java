@@ -5,6 +5,12 @@ public class SCM {
 	private SCMType scmType;
 	private String repoUrl;
 	
+	
+	public SCM(SCMType scmType, String repoUrl) {
+		super();
+		this.scmType = scmType;
+		this.repoUrl = repoUrl;
+	}
 	public SCMType getScmType() {
 		return scmType;
 	}

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.hpe.it.sharedservice.devops.platform.dao.DevOpsProjectDao;
 import com.hpe.it.sharedservice.devops.platform.model.DevOpsApplication;
 import com.hpe.it.sharedservice.devops.platform.model.DevOpsProject;
+import com.hpe.it.sharedservice.devops.platform.model.Result;
 
 @Service
 public class DevOpsProjectService {
@@ -100,22 +101,30 @@ public class DevOpsProjectService {
 	 * @return
 	 * @throws MalformedURLException
 	 */
-	public boolean appendApplication(DevOpsApplication application, String appId) {
+	public boolean appendApplication(DevOpsApplication application, String projectId) {
 		DevOpsProject app =null;
 		try {
 			List<User> owners = new ArrayList<User>();
 			owners.add(new UserImpl("guanx", "xiang.guan@hpe.com"));
 			jenkinsService.createJob(application, owners);
 			app = devOpsProjectDao
-					.getDevOpsProjectById(appId);
+					.getDevOpsProjectById(projectId);
 			if (app == null) {
 				return false;
+			}else{
+				app.addDevOpsApplication(application);
 			}
-		} catch (MalformedURLException e) {
+		} catch (Error e) {
 			LOG.error("Error occures when create jenkins job", e);
+			jenkinsService.retrieveJob(application);
+			return false;
+		}catch(Exception e){
+			LOG.error("Exception occures when create jenkins job", e);
 			jenkinsService.retrieveJob(application);
 			return false;
 		}
 		return devOpsProjectDao.updateProject(app);
 	}
+	
+	
 }

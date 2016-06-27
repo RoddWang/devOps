@@ -14,10 +14,19 @@ import nl.tudelft.jenkins.jobs.Job;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.hpe.it.sharedservice.devops.platform.model.Result;
+import com.hpe.it.sharedservice.devops.platform.model.Result.Status;
+import com.hpe.it.sharedservice.devops.platform.service.JenkinsService;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:applicationContext.xml")
 public class JobCreateTest {
 	private Injector injector;
 
@@ -30,7 +39,8 @@ public class JobCreateTest {
     private static final User USER0 = new UserImpl("xiang.guan", "xiang.guan@hpe.com");
 
 	private static final List<User> USERS = new ArrayList<User>();
-
+	@Autowired
+	private JenkinsService jenkinsService;
 	static {
 		USERS.add(USER0);
 	}
@@ -52,5 +62,10 @@ public class JobCreateTest {
 		job.asXml();
 		Assert.assertNotNull(job);
 		client.retrieveJob(job.getName());
+	}
+	@Test
+	public void build(){
+		Result result = jenkinsService.launchBuild("DevOpsPlatform");
+		Assert.assertEquals(Status.SUCCESS, result.getStatus());
 	}
 }

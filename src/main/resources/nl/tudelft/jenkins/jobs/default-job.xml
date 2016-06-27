@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+	<actions />
+	<description></description>
+	<keepDependencies>false</keepDependencies>
+	<properties>
+		<hudson.security.AuthorizationMatrixProperty />
+	</properties>
+
+	<canRoam>true</canRoam>
+	<disabled>false</disabled>
+	<blockBuildWhenDownstreamBuilding>false
+	</blockBuildWhenDownstreamBuilding>
+	<blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+	<triggers>
+		<com.cloudbees.jenkins.GitHubPushTrigger
+			plugin="github@1.19.1">
+			<spec></spec>
+		</com.cloudbees.jenkins.GitHubPushTrigger>
+	</triggers>
+	<concurrentBuild>false</concurrentBuild>
+	<builders>
+		<hudson.tasks.BatchFile>
+			<command>git pull {2}</command>
+		</hudson.tasks.BatchFile>
+		<hudson.plugins.sonar.SonarRunnerBuilder
+			plugin="sonar@2.4.1">
+			<project></project>
+			<properties>
+				sonar.projectKey={0}:{1}
+				sonar.projectName={1}
+				sonar.projectVersion=0.1.0
+				# path to
+				source directories
+				sonar.sources=src/main/java
+				sonar.tests=src/test/java
+				#sonar.binaries=target/classes
+
+				# Language
+				sonar.language=java
+				sonar.sourceEncoding=UTF-8
+				sonar.java.coveragePlugin=jacoco
+				sonar.junit.reportsPath=target/surefire-reports
+				sonar.surefire.reportsPath=target/surefire-reports
+			</properties>
+			<javaOpts></javaOpts>
+			<additionalArguments></additionalArguments>
+			<jdk>(Inherit From Job)</jdk>
+			<task>scan</task>
+		</hudson.plugins.sonar.SonarRunnerBuilder>
+		<hudson.tasks.Maven>
+			<targets>
+			clean package
+			</targets>
+			<mavenName>maven3.3</mavenName>
+			<usePrivateRepository>false</usePrivateRepository>
+			<settings class="jenkins.mvn.DefaultSettingsProvider" />
+			<globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider" />
+		</hudson.tasks.Maven>
+	</builders>
+	<reporters>
+		<hudson.plugins.checkstyle.CheckStyleReporter>
+			<healthy />
+			<unHealthy />
+			<pluginName>[CHECKSTYLE] </pluginName>
+			<thresholdLimit>low</thresholdLimit>
+			<canRunOnFailed>false</canRunOnFailed>
+			<useDeltaValues>false</useDeltaValues>
+			<thresholds>
+				<unstableTotalAll />
+				<unstableTotalHigh />
+				<unstableTotalNormal />
+				<unstableTotalLow />
+				<failedTotalAll />
+				<failedTotalHigh />
+				<failedTotalNormal />
+				<failedTotalLow />
+			</thresholds>
+			<dontComputeNew>true</dontComputeNew>
+			<useStableBuildAsReference>false</useStableBuildAsReference>
+		</hudson.plugins.checkstyle.CheckStyleReporter>
+		<hudson.plugins.findbugs.FindBugsReporter>
+			<healthy />
+			<unHealthy />
+			<pluginName>[FINDBUGS] </pluginName>
+			<thresholdLimit>low</thresholdLimit>
+			<canRunOnFailed>false</canRunOnFailed>
+			<useDeltaValues>false</useDeltaValues>
+			<thresholds>
+				<unstableTotalAll />
+				<unstableTotalHigh />
+				<unstableTotalNormal />
+				<unstableTotalLow />
+				<failedTotalAll />
+				<failedTotalHigh />
+				<failedTotalNormal />
+				<failedTotalLow />
+			</thresholds>
+			<dontComputeNew>true</dontComputeNew>
+			<useStableBuildAsReference>false</useStableBuildAsReference>
+			<isRankActivated>false</isRankActivated>
+		</hudson.plugins.findbugs.FindBugsReporter>
+		<hudson.plugins.pmd.PmdReporter>
+			<healthy />
+			<unHealthy />
+			<pluginName>[PMD] </pluginName>
+			<thresholdLimit>low</thresholdLimit>
+			<canRunOnFailed>false</canRunOnFailed>
+			<useDeltaValues>false</useDeltaValues>
+			<thresholds>
+				<unstableTotalAll />
+				<unstableTotalHigh />
+				<unstableTotalNormal />
+				<unstableTotalLow />
+				<failedTotalAll />
+				<failedTotalHigh />
+				<failedTotalNormal />
+				<failedTotalLow />
+			</thresholds>
+			<dontComputeNew>true</dontComputeNew>
+			<useStableBuildAsReference>false</useStableBuildAsReference>
+		</hudson.plugins.pmd.PmdReporter>
+		<hudson.maven.reporters.MavenMailer>
+			<recipients>{3}</recipients>
+			<dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+			<sendToIndividuals>false</sendToIndividuals>
+			<perModuleEmail>false</perModuleEmail>
+		</hudson.maven.reporters.MavenMailer>
+	</reporters>
+	<publishers />
+	<buildWrappers />
+</project>

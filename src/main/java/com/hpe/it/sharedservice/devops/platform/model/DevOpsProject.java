@@ -6,7 +6,7 @@ import java.util.List;
 public class DevOpsProject {
 	private String _id;
 	private String name;
-	private List<DevOpsApplication> apps;
+	private List<DevOpsApplication> apps = new ArrayList<DevOpsApplication>();;
 	
 	public String get_id() {
 		return _id;
@@ -32,10 +32,17 @@ public class DevOpsProject {
 	 * @param service
 	 */
 	public void addDevOpsApplication(DevOpsApplication service){
-		if(this.apps==null){
-			this.apps = new ArrayList<DevOpsApplication>();
-		}
 		this.apps.add(service);
+	}
+	
+	public DevOpsApplication findAppById(String appId){
+		for (DevOpsApplication app : apps) {
+			if(app.get_id().equals(appId)){
+				return app;
+			}
+		}
+		return null;
+		
 	}
 	
 }

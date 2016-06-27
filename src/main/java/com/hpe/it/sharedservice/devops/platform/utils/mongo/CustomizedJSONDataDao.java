@@ -41,6 +41,13 @@ public abstract class CustomizedJSONDataDao<T> {
 		}
 	}
 	
+	public T saveNewObjectAndGet(T obj) throws Exception{
+		if(getCollectionName()!=null){
+			saveNewObject(getCollectionName(),obj);
+		}
+		return obj;
+	}
+	
 	public List<T> getItems(BasicDBObject conditionObj, BasicDBObject projectObj,BasicDBObject sortObj){
 		if(getCollectionName()!=null){
 			return getItems(getCollectionName(),conditionObj,projectObj,sortObj);
