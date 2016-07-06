@@ -34,7 +34,7 @@
 				source directories
 				sonar.sources=src/main/java
 				sonar.tests=src/test/java
-				#sonar.binaries=target/classes
+				sonar.binaries=target/classes
 
 				# Language
 				sonar.language=java
