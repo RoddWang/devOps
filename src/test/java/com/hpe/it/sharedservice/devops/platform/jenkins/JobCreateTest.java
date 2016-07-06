@@ -13,6 +13,7 @@ import nl.tudelft.jenkins.jobs.Job;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import com.hpe.it.sharedservice.devops.platform.model.Result;
 import com.hpe.it.sharedservice.devops.platform.model.Result.Status;
 import com.hpe.it.sharedservice.devops.platform.service.JenkinsService;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:applicationContext.xml")
 public class JobCreateTest {
@@ -52,6 +54,7 @@ public class JobCreateTest {
 	}
 
 	@Test
+	@Ignore
 	public void createTest() {
 		injector = Guice.createInjector(new JenkinsWsClientGuiceModule(
 				defaultJenkinsUrl, defaultJenkinsUser, defaultJenkinsPass));
@@ -64,6 +67,7 @@ public class JobCreateTest {
 		client.retrieveJob(job.getName());
 	}
 	@Test
+	@Ignore
 	public void build(){
 		Result result = jenkinsService.launchBuild("DevOpsPlatform");
 		Assert.assertEquals(Status.SUCCESS, result.getStatus());

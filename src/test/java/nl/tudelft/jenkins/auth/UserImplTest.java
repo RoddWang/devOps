@@ -7,11 +7,13 @@ import static org.junit.Assert.assertThat;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Ignore;
 import org.junit.Test;
-
+@Ignore
 public class UserImplTest {
 
 	@Test
+    @Ignore
 	public void testThatParsingFromCorrectXmlWorks() throws Exception {
 
 		InputStream is = getClass().getResourceAsStream("misterx.xml");
