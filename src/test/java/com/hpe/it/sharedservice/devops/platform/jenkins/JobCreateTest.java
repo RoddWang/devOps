@@ -56,7 +56,7 @@ public class JobCreateTest {
 		injector = Guice.createInjector(new JenkinsWsClientGuiceModule(
 				defaultJenkinsUrl, defaultJenkinsUser, defaultJenkinsPass));
         
-		client = injector.getInstance(JenkinsClient.class);
+		client = injector.getInstance(JenkinsClientPlusImpl.class);
 		GitScmConfig scmConfig = new GitScmConfig(JOB_SCM_URL);
 		final Job job = client.createJob("TestJob_323sdl3d", scmConfig, USERS);
 		job.asXml();

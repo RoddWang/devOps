@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 
 import org.jdom2.Document;
 
+import com.hpe.it.sharedservice.devops.platform.utils.Constants;
+
 import nl.tudelft.jenkins.jobs.JobImpl;
 
 public class JobPlusImpl extends JobImpl {
@@ -17,9 +19,8 @@ public class JobPlusImpl extends JobImpl {
 	
 	@Override
 	public String asXml() {
-		return MessageFormat.format(super.asXml(),"customized",super.getName(),super.getScmConfig().getAddress());
+		return MessageFormat.format(super.asXml(),Constants.SONARQUBE_COMPONENTKEY_PERFIX,super.getName(),super.getScmConfig().getAddress());
 	}
-	
 	
 
 }
