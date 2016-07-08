@@ -183,4 +183,6 @@ public class ProjectControler {
 		}
 		return integrationService.getBuildConsole(app.getApplicationName(), buildId);
 	}
+	
+	
 }

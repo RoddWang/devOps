@@ -30,8 +30,7 @@
 				sonar.projectKey={0}:{1}
 				sonar.projectName={1}
 				sonar.projectVersion=0.1.0
-				# path to
-				source directories
+				# path to source directories
 				sonar.sources=src/main/java
 				sonar.tests=src/test/java
 				sonar.binaries=target/classes

@@ -18,6 +18,17 @@ public class Result {
 		super();
 		this.status=Status.SUCCESS;
 	}
+	
+	public Result(Status status){
+		this.status=status;
+	}
+	
+	public Result(Status status,String msg){
+		this.status=status;
+		this.msg=msg;
+	}
+	
+	
 	public Status getStatus() {
 		return status;
 	}

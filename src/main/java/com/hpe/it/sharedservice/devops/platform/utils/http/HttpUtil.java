@@ -15,20 +15,27 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import com.hpe.it.sharedservice.devops.platform.exception.DevOpsException;
+import com.hpe.it.sharedservice.devops.platform.model.Result;
+import com.hpe.it.sharedservice.devops.platform.model.Result.Status;
+
 
 public class HttpUtil {
 	private static Log LOG = LogFactory.getLog(HttpUtil.class);
-	public static String sonarQubeGetApi(String apiurl,Map<String, String> params) throws IOException{
-        
+	public static Result sonarQubeGetApi(String apiurl,Map<String, String> params) throws IOException{
+        Result result = new Result();
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		
 		HttpPost httpPost = new HttpPost(apiurl+buildQuery(params));
 		CloseableHttpResponse response= null;
-		String resultContent="";
 		try {
 			response = httpclient.execute(httpPost);
 			HttpEntity entity = response.getEntity();
-			resultContent = IOUtils.toString(entity.getContent());
+			if(response.getStatusLine().getStatusCode()==404){
+				result.setStatus(Status.ERROR);
+				result.setMsg("404 Found");
+			}
+			result.setResultData(IOUtils.toString(entity.getContent()));
 			EntityUtils.consume(entity);
 			
 		} catch (ClientProtocolException e) {
@@ -45,7 +52,7 @@ public class HttpUtil {
 					LOG.error("can not close http connection", e);
 				}
 		}
-		return resultContent;
+		return result;
 	}
 	
 	public static String buildQuery(Map<String, String> params){

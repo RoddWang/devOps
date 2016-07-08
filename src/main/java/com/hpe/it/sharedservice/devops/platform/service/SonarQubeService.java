@@ -7,6 +7,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.hpe.it.sharedservice.devops.platform.model.Result;
+import com.hpe.it.sharedservice.devops.platform.model.Result.Status;
 import com.hpe.it.sharedservice.devops.platform.utils.Constants;
 import com.hpe.it.sharedservice.devops.platform.utils.http.HttpUtil;
 
@@ -14,7 +16,7 @@ import com.hpe.it.sharedservice.devops.platform.utils.http.HttpUtil;
 public class SonarQubeService {
 	private static String SONAR_HOST="http://localhost:9000/";
 	
-	public String fetchSonarQubeMetricReport(String appName,List<String> measures) throws IOException{
+	public Result fetchSonarQubeMetricReport(String appName,List<String> measures) {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("componentKey", Constants.SONARQUBE_COMPONENTKEY_PERFIX+":"+appName);
 		StringBuilder measuresString=new StringBuilder();
@@ -26,9 +28,10 @@ public class SonarQubeService {
 		}else{
 			params.put("metricKeys", measuresString.toString());
 		}
-		return HttpUtil.sonarQubeGetApi(SONAR_HOST+"api/measures/component", params);
+		try {
+			return HttpUtil.sonarQubeGetApi(SONAR_HOST+"api/measures/component", params);
+		} catch (IOException e) {
+			return new Result(Status.ERROR,e.getMessage());
+		}
 	}
-	
-	
-	
 }
