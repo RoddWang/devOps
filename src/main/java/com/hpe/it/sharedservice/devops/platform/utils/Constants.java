@@ -96,7 +96,13 @@ public class Constants {
 		SONARQUBE_METRICS.add("coverage");
 		SONARQUBE_METRICS.add("new_coverage");
 		SONARQUBE_METRICS.add("line_coverage");
+		SONARQUBE_METRICS.add("lines_to_cover");
+		SONARQUBE_METRICS.add("test_execution_time");
 		SONARQUBE_METRICS.add("new_line_coverage");
+		SONARQUBE_METRICS.add("uncovered_conditions");
+		SONARQUBE_METRICS.add("branch_coverage");
+		SONARQUBE_METRICS.add("new_branch_coverage");
+		SONARQUBE_METRICS.add("new_uncovered_conditions");
 		SONARQUBE_METRICS.add("tests");
 		SONARQUBE_METRICS.add("skipped_tests");
 		SONARQUBE_METRICS.add("test_errors");
