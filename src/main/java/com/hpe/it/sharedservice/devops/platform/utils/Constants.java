@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Constants {
 
+	//no use
 	public static final String SONARQUBE_COMPONENTKEY_PERFIX="devops";
 	
 	/**

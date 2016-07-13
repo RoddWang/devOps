@@ -23,39 +23,38 @@
 		<hudson.tasks.BatchFile>
 			<command>git pull {2}</command>
 		</hudson.tasks.BatchFile>
+		<hudson.tasks.Maven>
+			<targets>org.jacoco:jacoco-maven-plugin:prepare-agent  clean install</targets>
+			<mavenName>maven3.3</mavenName>
+			<usePrivateRepository>false</usePrivateRepository>
+			<settings class="jenkins.mvn.DefaultSettingsProvider" />
+			<globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider" />
+		</hudson.tasks.Maven>
 		<hudson.plugins.sonar.SonarRunnerBuilder
 			plugin="sonar@2.4.1">
 			<project></project>
 			<properties>
-				sonar.projectKey={0}:{1}
-				sonar.projectName={1}
-				sonar.projectVersion=0.1.0
-				# path to source directories
-				sonar.sources=src/main/java
-				sonar.tests=src/test/java
-				sonar.binaries=target/classes
+sonar.projectKey={0}:{1}
+sonar.projectName={1}
+sonar.projectVersion=0.1.0
+# path to source directories
+sonar.sources=src/main/java
+sonar.tests=src/test/java
+sonar.binaries=target/classes
 
-				# Language
-				sonar.language=java
-				sonar.sourceEncoding=UTF-8
-				sonar.java.coveragePlugin=jacoco
-				sonar.junit.reportsPath=target/surefire-reports
-				sonar.surefire.reportsPath=target/surefire-reports
+# Language
+sonar.language=java
+sonar.sourceEncoding=UTF-8
+sonar.java.coveragePlugin=jacoco
+sonar.junit.reportsPath=target/surefire-reports
+sonar.surefire.reportsPath=target/surefire-reports
 			</properties>
 			<javaOpts></javaOpts>
 			<additionalArguments></additionalArguments>
 			<jdk>(Inherit From Job)</jdk>
 			<task>scan</task>
 		</hudson.plugins.sonar.SonarRunnerBuilder>
-		<hudson.tasks.Maven>
-			<targets>
-			clean package
-			</targets>
-			<mavenName>maven3.3</mavenName>
-			<usePrivateRepository>false</usePrivateRepository>
-			<settings class="jenkins.mvn.DefaultSettingsProvider" />
-			<globalSettings class="jenkins.mvn.DefaultGlobalSettingsProvider" />
-		</hudson.tasks.Maven>
+
 	</builders>
 	<reporters>
 		<hudson.plugins.checkstyle.CheckStyleReporter>
@@ -120,12 +119,62 @@
 			<useStableBuildAsReference>false</useStableBuildAsReference>
 		</hudson.plugins.pmd.PmdReporter>
 		<hudson.maven.reporters.MavenMailer>
-			<recipients>{3}</recipients>
+			<recipients></recipients>
 			<dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
 			<sendToIndividuals>false</sendToIndividuals>
 			<perModuleEmail>false</perModuleEmail>
 		</hudson.maven.reporters.MavenMailer>
 	</reporters>
-	<publishers />
+	<publishers>
+        <jenkins.plugins.publish__over__ssh.BapSshPublisherPlugin plugin="publish-over-ssh@1.14">
+        <consolePrefix>SSH:</consolePrefix>
+        <delegate>
+        <publishers>
+        <jenkins.plugins.publish__over__ssh.BapSshPublisher>
+        <configName>c9t17878.itcs.hpecorp.net</configName>
+        <verbose>false</verbose>
+        <transfers>
+        <jenkins.plugins.publish__over__ssh.BapSshTransfer>
+        <remoteDirectory>'${JOB_NAME}/builds/build-${BUILD_NUMBER}'</remoteDirectory>
+        <sourceFiles>**/target/*.war</sourceFiles>
+        <excludes/>
+        <removePrefix>target</removePrefix>
+        <remoteDirectorySDF>false</remoteDirectorySDF>
+        <flatten>false</flatten>
+        <cleanRemote>false</cleanRemote>
+        <noDefaultExcludes>false</noDefaultExcludes>
+        <makeEmptyDirs>false</makeEmptyDirs>
+        <patternSeparator>[, ]+</patternSeparator>
+        <execCommand>
+pwd
+HOME=`pwd`
+echo "UPLOAD_COMPLETE"
+cd '${HOME}'/jenkins/'${JOB_NAME}'/builds/build-'${BUILD_NUMBER}'
+warName=`ls *.war|head -1`
+echo "START GENERATE DOCKERFILE"
+sh '${HOME}'/jenkins/generateDockerFile.sh '${warName}'  .
+echo "GENERATE DOCKERFILE COMPLETE"
+sudo docker build -t  '${JOB_NAME}'/tomcat .
+echo "kill all running related container"
+sudo docker kill $(sudo docker ps -a |grep '${JOB_NAME}'|awk '{print $1}')
+echo "remove all stoped related container"
+sudo docker rm $(sudo docker ps -a |grep '${JOB_NAME}'|awk '{print $1}')
+sudo docker run -d -p 22222:8080  '${JOB_NAME}'/tomcat
+        </execCommand>
+        <execTimeout>120000</execTimeout>
+        <usePty>false</usePty>
+        </jenkins.plugins.publish__over__ssh.BapSshTransfer>
+        </transfers>
+        <useWorkspaceInPromotion>false</useWorkspaceInPromotion>
+        <usePromotionTimestamp>false</usePromotionTimestamp>
+        </jenkins.plugins.publish__over__ssh.BapSshPublisher>
+        </publishers>
+        <continueOnError>false</continueOnError>
+        <failOnError>false</failOnError>
+        <alwaysPublishFromMaster>false</alwaysPublishFromMaster>
+        <hostConfigurationAccess class="jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin" reference="../.."/>
+        </delegate>
+        </jenkins.plugins.publish__over__ssh.BapSshPublisherPlugin>
+        </publishers>
 	<buildWrappers />
 </project>

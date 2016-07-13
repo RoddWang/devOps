@@ -27,14 +27,14 @@
 		<property name="testOnReturn" value="true" />
 	</bean>
 
-	<bean id="jedisPool" class="redis.clients.jedis.JedisPool"
+<!-- 	<bean id="jedisPool" class="redis.clients.jedis.JedisPool"
 		destroy-method="destroy">
 		<constructor-arg index="0" ref="jedisPoolConfig" />
 		<constructor-arg index="1" type="java.lang.String"
 			value="${redis.host}" />
 		<constructor-arg index="2" value="${redis.port}" />
 	</bean>
-
+ -->
 	<bean id="dbTemp"
 		class="com.hpe.it.sharedservice.devops.platform.utils.mongo.MongoDBTemplate">
 		<property name="mongoServer" value="${jdbc.mongo.mongoServer}" />
