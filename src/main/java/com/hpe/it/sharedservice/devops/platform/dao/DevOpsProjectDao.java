@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import com.hpe.it.sharedservice.devops.platform.model.DevOpsProject;
+import com.hpe.it.sharedservice.devops.platform.model.IntegrationRecord;
 import com.hpe.it.sharedservice.devops.platform.utils.mongo.CustomizedJSONDataDao;
 import com.mongodb.BasicDBObject;
 
@@ -102,4 +103,7 @@ public class DevOpsProjectDao extends CustomizedJSONDataDao<DevOpsProject> {
 		else
 			return false;
 	}
+	
+	
+	
 }

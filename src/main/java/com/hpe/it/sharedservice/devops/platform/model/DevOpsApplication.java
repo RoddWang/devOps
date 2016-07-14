@@ -1,5 +1,6 @@
 package com.hpe.it.sharedservice.devops.platform.model;
 
+
 public class DevOpsApplication {
 	private String _id;
 	private String applicationName;
@@ -24,4 +25,32 @@ public class DevOpsApplication {
 	public void setScm(SCM scm) {
 		this.scm = scm;
 	}
+	
+	
+/*	public int getLatestBuildNum(){
+		if(integrationRecords==null||integrationRecords.size()==0){
+			return 1;
+		}else{
+			int latestIndex=1;
+			for (IntegrationRecord integrationRecord : integrationRecords) {
+				if(integrationRecord.getJenkinsId() >= 1){
+					latestIndex=integrationRecord.getJenkinsId();
+				}
+				
+			}
+			return latestIndex;
+		}
+	}*/
+	
+/*	public IntegrationRecord getRecordByJenkinsId(int id){
+		if(integrationRecords==null)
+		    return null;
+		for (IntegrationRecord integrationRecord : integrationRecords) {
+			if(integrationRecord.getJenkinsId() == id){
+				return integrationRecord;
+			}
+		}
+		return null;
+	}*/
+
 }

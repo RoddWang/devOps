@@ -15,7 +15,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import com.hpe.it.sharedservice.devops.platform.exception.DevOpsException;
 import com.hpe.it.sharedservice.devops.platform.model.Result;
 import com.hpe.it.sharedservice.devops.platform.model.Result.Status;
 

@@ -1,12 +1,19 @@
 package com.hpe.it.sharedservice.devops.platform.controler;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.UUID;
 
 
 
-import org.apache.commons.lang.StringUtils;
 
+
+
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +43,7 @@ public class ProjectControler {
 	private DevOpsProjectService devOpsProjectService;
 	@Autowired
 	private IntegrationService integrationService;
+	
 	
 	
 	@ResponseBody()
@@ -102,7 +110,7 @@ public class ProjectControler {
 		} else {
 			result.setStatus(Status.SUCCESS);
 			result.setResultData(app);
-			Result launchResult = integrationService.integrate(app);
+			Result launchResult = integrationService.integrate(projectId,app);
 			if(!launchResult.getStatus().equals(Status.SUCCESS)){
 				result.setStatus(Status.WARNING);
 				result.setMsg("Can not launch the build works please check <a href=\""+integrationService.getJenkinsHost()+"/"+app.getApplicationName()+"\"> jenkins </a>");
@@ -136,7 +144,7 @@ public class ProjectControler {
 			result.setMsg("Can not find given application");
 			return result;
 		}
-		return integrationService.integrate(app);
+		return integrationService.integrate(projectId,app);
 	}
 	
 	@ResponseBody()
@@ -184,5 +192,36 @@ public class ProjectControler {
 		return integrationService.getBuildConsole(app.getApplicationName(), buildId);
 	}
 	
+	@ResponseBody()
+	@RequestMapping(value = "/ci/appCIRecords4Project")
+	public Result integrationRecords4Project(String projectId){
+
+		if(StringUtils.isBlank(projectId)||StringUtils.isBlank(projectId)){
+			Result result = new Result();
+			result.setStatus(Status.ERROR);
+			result.setMsg("unexpect parameters");
+			return result;
+		}
+		DevOpsProject project = devOpsProjectService.getProjectById(projectId);
+		List<String> appIds = new ArrayList<String>(project.getApps().size());
+		for (ListIterator<DevOpsApplication> iterator = project.getApps().listIterator(); iterator.hasNext();) {
+			appIds.add(iterator.next().get_id());
+			
+		}
+		return integrationService.getIntegrationRecordsByProject(appIds);
+	}
 	
+	@ResponseBody()
+	@RequestMapping(value = "/ci/appCIRecords4App")
+	public Result integrationRecords4App(String appId){
+		
+		if(StringUtils.isBlank(appId)||StringUtils.isBlank(appId)){
+			Result result = new Result();
+			result.setStatus(Status.ERROR);
+			result.setMsg("unexpect parameters");
+			return result;
+		}
+
+		return integrationService.getIntegrationRecordsByApp(appId);
+	}
 }

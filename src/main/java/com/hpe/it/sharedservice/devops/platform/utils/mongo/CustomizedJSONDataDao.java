@@ -64,7 +64,11 @@ public abstract class CustomizedJSONDataDao<T> {
 	}
 	
 	public List<DBObject> getDBObjects(String collName,BasicDBObject conditionObj, BasicDBObject projectObj,BasicDBObject sortObj){
+		
 		return mongoOperations.selectList(collName, conditionObj,projectObj, sortObj);
+	}
+	public long countByCondition(BasicDBObject conditionObj){
+		return mongoOperations.getCountByCondition(getCollectionName(), conditionObj);
 	}
 	public List<DBObject> getDBObjects(BasicDBObject conditionObj, BasicDBObject projectObj,BasicDBObject sortObj){
 		if(getCollectionName()!=null){

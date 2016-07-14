@@ -28,7 +28,6 @@ public class Result {
 		this.msg=msg;
 	}
 	
-	
 	public Status getStatus() {
 		return status;
 	}

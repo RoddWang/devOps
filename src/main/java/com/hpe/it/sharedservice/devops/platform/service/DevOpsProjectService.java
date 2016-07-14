@@ -3,6 +3,7 @@ package com.hpe.it.sharedservice.devops.platform.service;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import nl.tudelft.jenkins.auth.User;
 import nl.tudelft.jenkins.auth.UserImpl;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Service;
 import com.hpe.it.sharedservice.devops.platform.dao.DevOpsProjectDao;
 import com.hpe.it.sharedservice.devops.platform.model.DevOpsApplication;
 import com.hpe.it.sharedservice.devops.platform.model.DevOpsProject;
-import com.hpe.it.sharedservice.devops.platform.model.Result;
+import com.hpe.it.sharedservice.devops.platform.model.IntegrationRecord;
+import com.hpe.it.sharedservice.devops.platform.model.IntegrationStatus;
+import com.hpe.it.sharedservice.devops.platform.utils.TimeUtil;
 
 @Service
 public class DevOpsProjectService {
@@ -125,6 +128,50 @@ public class DevOpsProjectService {
 		}
 		return devOpsProjectDao.updateProject(app);
 	}
+/*	*//**
+	 * append a integration record to specific application
+	 * @param projectId
+	 * @param appId
+	 * @param record
+	 * @return
+	 *//*
+	public boolean appendIntegrationRecord(String projectId,String appId,IntegrationRecord record){
+		DevOpsProject project =null;
+		project = devOpsProjectDao
+				.getDevOpsProjectById(projectId);
+		DevOpsApplication app = project.findAppById(appId);
+		
+		if(app==null){return false;}
+		else{
+			record.setStartUTC(TimeUtil.formatUTCTime());
+			app.addRecord(record.get_id());
+			}
+		
+		return devOpsProjectDao.updateProject(project);
+
+	}*/
 	
-	
+/*	*//**
+	 * update a integration record to specific application and jenkins id
+	 * @param projectId
+	 * @param appId
+	 * @param record
+	 * @param jenkinsId
+	 * @return
+	 *//*
+	public boolean updateIntegrationRecord(String projectId,String appId,Map<String,Object> recordData,int jenkinsId,IntegrationStatus newStatus){
+		DevOpsProject project =null;
+		project = devOpsProjectDao
+				.getDevOpsProjectById(projectId);
+		DevOpsApplication app = project.findAppById(appId);
+		IntegrationRecord record = app.getRecordByJenkinsId(jenkinsId);
+		if(record!=null){
+			record.setResult(recordData);
+			record.setStatus(newStatus);
+			record.setEndUTC(TimeUtil.formatUTCTime());
+		}
+		
+		return devOpsProjectDao.updateProject(project);
+
+	}*/
 }
