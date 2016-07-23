@@ -5,19 +5,22 @@ import CI from '../components/CI';
 //import * as projectItem from '../actions/projectItem';
 
 //将state.counter绑定到props的counter
-function mapStateToProps(state,route) {
-  console.log("VisibleProject CI route",route);
+function mapStateToProps(state,props) {
+  console.log("VisibleProject CI props",props);
   console.log("VisibleProject CI state",state);
-  let proj =  state.projectList.find(project => project._id==route.location.query.projectId);
+  let proj =  state.projectList.find(project => project._id==props.location.query.projectId);
   for(let index in proj.apps) {
-    if(proj.apps[index]._id==route.location.query.appId) {
+    if(proj.apps[index]._id==props.location.query.appId) {
       var app=proj.apps[index];
     }
   }
+
+
   return {
     project: proj,
     application: app,
-    buildResult:state.buildResult
+    buildResult:state.buildResult,
+    integrationRecord:state.integrationRecord.get(props.location.query.curRecordId)
   };
 }
 /*//将action的所有方法绑定到props上

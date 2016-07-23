@@ -4,7 +4,7 @@ import {CODE_METRICS,TEST_METRICS,SECURITY_METRICS, RELIABILITY_METRICS,
     MAINTAINABILITY_METRICS,ISSUES_METRICS,DOCUMENTATION_METRICS,COMPLEXITY_METRICS,QUALITY_GATE,DUPLICATIONS_METRICS} from '../constants/Constants';
 import {INTEGRATION_BUILD_SUCCESS} from '../actions/integration';
 const initIntegrationResult= Immutable.Map({isprogress:true,
-    integrationStatus:'initial',
+    integrationStatus:'unknown',
     unit_test:Immutable.Map(),
     security_test:Immutable.Map(),
     code_review:Immutable.Map(),
@@ -12,14 +12,14 @@ const initIntegrationResult= Immutable.Map({isprogress:true,
     build:Immutable.Map(),
     perfomance_test:Immutable.Map(),
     barStatus:Immutable.Map({
-      overview:Immutable.Map({'isprogress':true,status:'initial'}),
-      code:Immutable.Map({'isprogress':true,status:'initial'}),
-      unit_test:Immutable.Map({'isprogress':true,status:'initial'}),
-      code_review:Immutable.Map({'isprogress':true,status:'initial'}),
-      security:Immutable.Map({'isprogress':true,status:'initial'}),
-      performance:Immutable.Map({'isprogress':true,status:'initial'}),
-      functional_test:Immutable.Map({'isprogress':true,status:'initial'}),
-      build:Immutable.Map({'isprogress':true,status:'initial'})
+      overview:Immutable.Map({'isprogress':true,status:'unknown'}),
+      code:Immutable.Map({'isprogress':true,status:'unknown'}),
+      unit_test:Immutable.Map({'isprogress':true,status:'unknown'}),
+      code_review:Immutable.Map({'isprogress':true,status:'unknown'}),
+      security:Immutable.Map({'isprogress':true,status:'unknown'}),
+      performance:Immutable.Map({'isprogress':true,status:'unknown'}),
+      functional_test:Immutable.Map({'isprogress':true,status:'unknown'}),
+      build:Immutable.Map({'isprogress':true,status:'unknown'})
     })
   });
 export default function integrationResult(state = initIntegrationResult, action) {
@@ -38,10 +38,9 @@ export default function integrationResult(state = initIntegrationResult, action)
 }
 
 
-
 function constructResultData(rawResult) {
   let isprogress=true;
-  let integrationStatus="initial";
+  let integrationStatus="unknown";
   let resultData=rawResult.resultData;
   let buildInfo=resultData.build;
   let sonar=resultData.sonar;
@@ -50,7 +49,7 @@ function constructResultData(rawResult) {
   let alertStatus;
   let alertMsg;
   if(!sonar) {
-    alertStatus="initial";
+    alertStatus="unknown";
   }else{
 
     let rawMeasures = Immutable.fromJS(sonar.component.measures);
@@ -150,7 +149,7 @@ function constructResultData(rawResult) {
     integrationStatus:integrationStatus,
     unit_test:test,
     security_test:security,
-    code_review:reliability.concat(maintainability,issues,documentation,complexity,maintainability,reliability,code,duplications),
+    code_review:reliability.concat(maintainability,issues,documentation,complexity,code,duplications),
     build:Immutable.Map(buildInfo)
   });
 
@@ -184,15 +183,15 @@ function summarizeTabStatus(metricsList) {
 
 function estimateIntegrationStatus(buildResult) {
   if(buildResult.get('isprogress')) {
-    let progressing=Immutable.Map({"isprogress":true,"status":'initial'});
+    let progressing=Immutable.Map({"isprogress":true,"status":'unknown'});
     return Immutable.Map({overview:progressing,
       code:progressing,
       unit_test:progressing,
       security_test:progressing,
       code_review:progressing,
-      performance:Immutable.Map({'isprogress':true,status:'initial'}),
-      functional_test:Immutable.Map({'isprogress':true,status:'initial'}),
-      build:Immutable.Map({'isprogress':true,status:'initial'})
+      performance:Immutable.Map({'isprogress':true,status:'unknown'}),
+      functional_test:Immutable.Map({'isprogress':true,status:'unknown'}),
+      build:Immutable.Map({'isprogress':true,status:'unknown'})
     });
   }else{
     //check if code check out correctly.

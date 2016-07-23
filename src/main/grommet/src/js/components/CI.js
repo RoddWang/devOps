@@ -11,13 +11,17 @@ import Box from 'grommet/components/Box';
 import StatusBar from './StatusBar';
 //import Next from 'grommet/components/icons/base/Next';
 import { Link } from 'react-router';
+
+
+
 export default class CI extends Component {
 
 
   render () {
     //let {project, application} = this.props;
     console.log("CI props",this.props);
-    let {buildResult,project,application} = this.props;
+    let {buildResult,project,application,integrationRecord} = this.props;
+    console.log("integrationRecord~~~~~~",integrationRecord.toJS());
     return (
     	<Box>
             <Box focusable={false}   direction="row" align="start">

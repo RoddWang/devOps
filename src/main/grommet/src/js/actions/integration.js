@@ -38,6 +38,9 @@ export function clearAllIntegrationStatus() {
 
   };
 }
+export function queryIntegrationResultByProject(projectId) {
+
+}
 
 export function queryIntegrationResult(projectId,appId,buildId) {
   return dispatch => {
@@ -54,7 +57,6 @@ export function queryIntegrationResult(projectId,appId,buildId) {
       buildResult.resultData.build=eval("("+result.resultData.build+")");
       buildResult.resultData.sonar=eval("("+result.resultData.sonar+")");
       return dispatch({type:INTEGRATION_RESULT,data:buildResult});
-
     });
   };
 }
@@ -88,5 +90,7 @@ export function build (projectId,appId) {
     });
   };
 }
+
+
 
 

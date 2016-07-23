@@ -9,6 +9,7 @@ export const URL_PROJECT_APPEND_APP=PROJECT_CONTEXT+"/api/project/addApp";
 export const URL_ALL_INTEGRATION_STATUS=PROJECT_CONTEXT+"/api/project/allBuildInfo";
 export const URL_INTEGRATION_RESULT=PROJECT_CONTEXT+"/api/project/buildInfo";
 export const URL_INTEGRATION_BUILD=PROJECT_CONTEXT+"/api/project/build";
+export const URL_PROJECT_INTEGRATION_RECORDS= PROJECT_CONTEXT+"/api/project/ci/appCIRecords4Project";
 //status
 export const SUCCESS='success';
 export const WARNING='warning';

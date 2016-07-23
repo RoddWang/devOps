@@ -27,7 +27,7 @@ export default class DevOpsApp extends Component {
                             </Link>
                         </Menu>
                     </Sidebar>
-                    <Box  focusable={false} direction="column" pad="medium" full={true}>
+                    <Box  focusable={false} direction="column"  full={true}>
                        {this.props.children}
                     </Box>
 			    </Split>
