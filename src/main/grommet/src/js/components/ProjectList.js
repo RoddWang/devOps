@@ -12,9 +12,9 @@ import VisibleProjectItem from '../containers/VisibleProjectItem';
 class ProjectList extends Component {
 
   componentDidMount() {
-
+/*
     let { projectListAction } = this.props;
-    projectListAction();
+    projectListAction();*/
 
   }
 
@@ -22,6 +22,7 @@ class ProjectList extends Component {
     let {projectList} = this.props;
     console.log("projectList ---",this.props);
     var appTags = projectList.map(function(project,index) {
+      console.log("project",project);
       return (<VisibleProjectItem  projectId={project._id} key={project._id} />);
     });
 
@@ -30,12 +31,12 @@ class ProjectList extends Component {
           <Box className="panel-header" focusable={false} justify="between" direction="row" pad="medium" align="center">
               <Box  align="center" >
                 <Heading tag="h2" strong={true}  align="center">
-                Projects
+                Assets
                 </Heading>
               </Box>
               <Box  focusable={false} align="center" direction="row" justify="end">
                 <Link to="/projects/list/new" >
-                  <Anchor tag="span" icon={<Add />} label="New Project" />
+                  <Anchor tag="span" icon={<Add />} label="New Asset" />
                 </Link>
                 <Menu icon={<MenuIcon/>}>
                   <Anchor tag="span" label="manage" />

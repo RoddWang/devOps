@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import Box from 'grommet/components/Box';
 import Spinning from 'grommet/components/icons/Spinning';
-import Notification from 'grommet/components/Notification';
+//import Notification from 'grommet/components/Notification';
 import Heading from 'grommet/components/Heading';
-//import Meter from 'grommet/components/Meter';
+import Header from 'grommet/components/Header';
 import QualityGateTitle from './QualityGateTitle';
+import StatusRibbon from './StatusRibbon';
 /*
 import Tile from 'grommet/components/Tile';*/
 /*import Menu from 'grommet/components/Menu';
@@ -39,28 +40,46 @@ export default class CISecurity extends Component {
     }
   }
   render () {
-    let {buildResult} = this.props;
-    if(buildResult.get('build').size==0) {
+    let {integrationRecord} = this.props;
+
+    if(integrationRecord.get('status')==='SPINNING') {
       return (
         <Box>
           <Spinning/>
         </Box>
       );
     }
-    let statusHead=(<Notification status="ok"  message="Quality Gate success"  />);
-    //console.log('test unit error',buildResult.get('security_test').find(metric => metric.get('metric')==='test_errors').get('value'));
-    let errors = buildResult.get('security_test').filter( metric => metric.get('status')!='OK');
-    console.log("error",errors);
-    if(errors.size>0) {
-      statusHead=(<Notification status="critical"  message="Failed cause Quality Gate" />);
+
+    if(integrationRecord.get('buildNo')===-1) {
+      return (<span></span>);
     }
+
+    let buildResult = integrationRecord.get('result').get('security_test').get('measures');
+    let security_test_status=integrationRecord.get('result').get('code_review').get('status');
+    let statusHead=(<StatusRibbon status="ok"  title="Code review passed"  />);
+    
+    if(security_test_status==='ERROR') {
+      statusHead=(<StatusRibbon status="critical"  title="Code review failed" />);
+    }else if(security_test_status==='WARNING') {
+      statusHead=(<StatusRibbon status="warning"  title="Code review failed" />);
+    }
+    
+    
+    let errors = buildResult.filter( metric => {
+      if(metric.get('condition')!==undefined) {
+        if(metric.get('condition').get('level')!=='OK') {
+          return true;
+        }
+      }
+      return false;
+    });
 
     let vulnerabilities=0;
     let new_vulnerabilities=0;
     let security_rating=0;
     
 
-    buildResult.get('security_test').forEach((metric, index, array)=>{
+    buildResult.forEach((metric, index, array)=>{
       if(metric.get('metric')==='vulnerabilities') {
         vulnerabilities=+metric.get('value');
       }else if(metric.get('metric')==='new_vulnerabilities') {
@@ -72,14 +91,20 @@ export default class CISecurity extends Component {
      
      
     });
-    console.log("buildResult.get('security_test')",buildResult.get('security_test').toJS());
+
     let quality_gate = errors.map(errorMetric => {
-      return (<QualityGateTitle title="New vulnerabilities" errorMetric={errorMetric}/>);
+      return (<QualityGateTitle title={errorMetric.get('metric').replace(/_/g," ")} errorMetric={errorMetric}/>);
     });
     return (
       <Box  pad={{"vertical":"small"}}>
           {statusHead}
           {quality_gate}
+          <Box direction="row">
+          <Header >
+            Security
+          </Header>
+          <Box align="end">Powered by Sonar</Box>
+          </Box>
           <Box  pad={{"vertical":"small","between":"small"}} direction="row" >
             
             <Box className="metric_block"  pad="small" align="center">

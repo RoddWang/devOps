@@ -14,13 +14,11 @@ public class IntegrationRecordDao extends CustomizedJSONDataDao<IntegrationRecor
 
 	@Override
 	public Class<IntegrationRecord> getTClass() {
-		// TODO Auto-generated method stub
 		return IntegrationRecord.class;
 	}
 
 	@Override
 	public String getCollectionName() {
-		// TODO Auto-generated method stub
 		return "DevOpsIntegrationRecord";
 	}
 	

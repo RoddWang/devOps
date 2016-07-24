@@ -12,7 +12,7 @@ export default class Setting extends Component {
   render () {
     return (
 			<span>
-			    seeting page
+			    TBD
 			</span>
 			);
   }

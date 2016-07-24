@@ -10,6 +10,7 @@ export const URL_ALL_INTEGRATION_STATUS=PROJECT_CONTEXT+"/api/project/allBuildIn
 export const URL_INTEGRATION_RESULT=PROJECT_CONTEXT+"/api/project/buildInfo";
 export const URL_INTEGRATION_BUILD=PROJECT_CONTEXT+"/api/project/build";
 export const URL_PROJECT_INTEGRATION_RECORDS= PROJECT_CONTEXT+"/api/project/ci/appCIRecords4Project";
+export const URL_ALL_INTEGRATION_RECORDS= PROJECT_CONTEXT+"/api/project/ci/allCIRecords";
 //status
 export const SUCCESS='success';
 export const WARNING='warning';
@@ -17,7 +18,7 @@ export const ERROR='error';
 export const UNKNOW='unknow';
 export const INITIAL='initial';
 
-
+export const TIMERS=new Object();
 
 //action
 export const CREATE_APPLICATION_PROMPT='CREATE_APPLICATION_PROMPT';

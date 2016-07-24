@@ -1,56 +1,70 @@
 import React, { Component } from 'react';
 import Box from 'grommet/components/Box';
 import Spinning from 'grommet/components/icons/Spinning';
-import Notification from 'grommet/components/Notification';
+//import Notification from 'grommet/components/Notification';
 import Heading from 'grommet/components/Heading';
 import Header from 'grommet/components/Header';
 import Meter from 'grommet/components/Meter';
 import QualityGateTitle from './QualityGateTitle';
-//import Immutable  from 'immutable';
-/*
-import Anchor from 'grommet/components/Anchor';
-
-import Article from 'grommet/components/Article';
-import Section from 'grommet/components/Section';*/
+import StatusRibbon from './StatusRibbon';
 export default class CIUnitTest extends Component {
-
+  git2https(giturl) {
+    var https = giturl.replace(':','/').replace("git@","https://").replace(".git","");
+    console.log(https);
+    return https;
+  }
   render () {
-    let {buildResult} = this.props;
+    let {integrationRecord} = this.props;
 
-    if(buildResult.get('isprogress')) {
+    if(integrationRecord.get('status')==='SPINNING') {
       return (
         <Box>
           <Spinning/>
         </Box>
       );
     }
-    console.log("UnitTest",buildResult.toJS());
-
-    
-    let statusHead=(<Notification status="ok"  message="All unit test successfully"  />);
-    //console.log('test unit error',buildResult.get('unit_test').find(metric => metric.get('metric')==='test_errors').get('value'));
-    let errors = buildResult.get('unit_test').filter( metric => metric.get('status')!='OK');
-    console.log("error",errors);
-    if(errors.size>0) {
-      console.log("errors",errors.toJS());
-      //let errorCount = buildResult.get('unit_test').find(metric => metric.get('metric')==='test_errors').get('value');
-      statusHead=(<Notification status="critical"  message="Failed cause Quality Gate" />);
+    if(integrationRecord.get('buildNo')===-1) {
+      return (<span></span>);
     }
-    let tests= 0;
-    let skipped_tests= 0;
-    let test_failures= 0;
-    let test_errors= 0;
     
-    let coverage=0;
-    let line_coverage=0;
-    let branch_coverage=0;
-    let new_coverage=0;
-    let new_line_coverage=0;
-    let new_branch_coverage=0;
+    let buildResult = integrationRecord.get('result').get('unit_test').get('measures');
+    let unit_test_status=integrationRecord.get('result').get('unit_test').get('status');
+    let statusHead=(<StatusRibbon status="ok"  title="Quality Gate Success"  />);
+    
+    if(unit_test_status==='ERROR') {
+      statusHead=(<StatusRibbon status="critical" ><span>Quality Gate Failed, please update the <a  target="_blank" href={this.git2https(integrationRecord.get('repositoryUrl'))}>Code</a></span> </StatusRibbon>);
+    }else if(unit_test_status==='WARNING') {
+      statusHead=(<StatusRibbon status="critical" ><span>Quality Gate Warning, please update the <a target="_blank" href={this.git2https(integrationRecord.get('repositoryUrl'))}>Code</a></span> </StatusRibbon>);
+    }
+    
+    console.log('unit test',buildResult.toJS());
+    let errors = buildResult.filter( metric => {
+
+      if(metric.get('condition')) {
+        
+        if(metric.get('condition').get('level')!=='OK') {
+          console.log("metric.get('condition')",metric.get('condition').toJS());
+          return true;
+        }
+      }
+      return false;
+    });
+
+    let tests= NaN;
+    let skipped_tests= NaN;
+    let test_failures= NaN;
+    let test_errors= NaN;
+    
+    let coverage=NaN;
+    let line_coverage=NaN;
+    let branch_coverage=NaN;
+    let new_coverage=NaN;
+    let new_line_coverage=NaN;
+    let new_branch_coverage=NaN;
 
     
     console.log("tests",tests);
-    buildResult.get('unit_test').forEach((metric, index, array)=>{
+    buildResult.forEach((metric, index, array)=>{
       let metricName = metric.get('metric');
       if(metricName==='tests') {
         tests=+metric.get('value');
@@ -79,19 +93,22 @@ export default class CIUnitTest extends Component {
 
     });
     let quality_gate = errors.map(errorMetric => {
-      return (<QualityGateTitle title="Coverage on new code" errorMetric={errorMetric} needFix={true}/>);
+      return (<QualityGateTitle key={errorMetric.get('metric')+"unittest"} title={errorMetric.get('metric').replace(/_/g," ")} errorMetric={errorMetric} needFix={true}/>);
     });
     console.log('new coverage',new_coverage,new_line_coverage,new_branch_coverage);
     return (
+    <Box justify="between">
       <Box pad={{"vertical":"small"}}>
         {statusHead}
         <Box direction="row">
-        {quality_gate}
-
+          {quality_gate}
         </Box>
-        <Header >
-            Unit Test
-        </Header>
+        <Box direction="row">
+          <Header >
+            Unit Test 
+          </Header>
+          <Box align="end">Powered by Jenkins</Box>
+        </Box>
         
         <Box direction="row" justify="center" pad={{"between":"large"}}>
           <Box >
@@ -130,6 +147,8 @@ export default class CIUnitTest extends Component {
           </Box>
         </Box>
       </Box>
+      
+    </Box>
     );
   }
 }

@@ -1,7 +1,7 @@
 //import Rest from 'grommet/utils/Rest';
 import {URL_PROJECT_APPEND_APP} from '../constants/Constants';
 import {SVN, GIT} from '../constants/Constants';
-import {  buildQuery ,processStatus ,headers } from 'grommet/utils/Rest';
+import {  buildQuery ,processStatus  } from 'grommet/utils/Rest';
 //import {projectListAction} from './projectList';
 export const CREATE_APPLICATION_SUCCESS = 'CREATE_APPLICATION_SUCCESS';
 export const CREATE_APPLICATION_ERROR='CREATE_APPLICATION_ERROR';
@@ -18,9 +18,8 @@ export function createSVNApplicationAction(appId,appName,repository) {
 
 function createNewApplication (projectId,appName,repository,scmType) {
   return dispatch => {
-    const options = { method: 'GET', headers: { headers }};
     const query = buildQuery({projectId:projectId,appName:appName,repository:repository,scmtype:scmType});
-    return fetch(URL_PROJECT_APPEND_APP+`${query}`,options)
+    return fetch(URL_PROJECT_APPEND_APP+`${query}`)
     .then(processStatus)
     .then(response => response.json())
     .then(result => {
@@ -29,10 +28,6 @@ function createNewApplication (projectId,appName,repository,scmType) {
       }else{
         return dispatch({type:CREATE_APPLICATION_ERROR,msg:result.msg});
       }
-    })
-    .catch(error => {
-      console.log("CREATE_APPLICATION_ERROR",error);
-      return dispatch({type:CREATE_APPLICATION_ERROR,msg:error});
     });
   };
 }

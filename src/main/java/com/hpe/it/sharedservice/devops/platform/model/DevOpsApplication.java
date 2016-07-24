@@ -17,6 +17,9 @@ public class DevOpsApplication {
 		return applicationName;
 	}
 	public void setApplicationName(String applicationName) {
+		if(applicationName!=null){
+			applicationName = applicationName.toLowerCase();
+		}
 		this.applicationName = applicationName;
 	}
 	public SCM getScm() {

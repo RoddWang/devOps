@@ -1,11 +1,15 @@
 package com.hpe.it.sharedservice.devops.platform.service;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +36,7 @@ import com.hpe.it.sharedservice.devops.platform.jenkins.JenkinsClientPlusImpl;
 import com.hpe.it.sharedservice.devops.platform.model.DevOpsApplication;
 import com.hpe.it.sharedservice.devops.platform.model.Result;
 import com.hpe.it.sharedservice.devops.platform.model.Result.Status;
+import com.hpe.it.sharedservice.devops.platform.utils.Constants;
 
 @Service
 public class JenkinsService {
@@ -133,7 +138,7 @@ public class JenkinsService {
 				result.setStatus(Status.SUCCESS);
 			
 				HttpEntity entity = response.getEntity();
-				long length = entity.getContentLength();
+				//long length = entity.getContentLength();
 				//if(length>0){
 					result.setResultData(IOUtils.toString(entity.getContent()));
 				//}
@@ -161,7 +166,25 @@ public class JenkinsService {
 		
 	}
 	
-	
+	public Map<String,String> jenkinsBuildConsoleAnalysis(String jobName,int buildId){
+		Map<String,String> result = new HashMap<String, String>();
+		Result painl = getBuildConsoleInfo(jobName, buildId);
+		if(!Status.SUCCESS.equals(painl.getStatus())){
+			return result;
+		}
+		LineIterator it = IOUtils.lineIterator(new StringReader(painl.getResultData().toString()));
+		while(it.hasNext()){
+			String curLog = it.nextLine();
+			if(!StringUtils.isBlank(curLog)&&StringUtils.startsWith(curLog, Constants.JENKINS_BUILD_CONSOLE_KEY_WORDS_DOCKER_IMAGE)){
+				String[] entry = StringUtils.split(curLog, ":",2);
+				if(entry!=null&&entry.length>1&&!StringUtils.isBlank(entry[1])){
+					result.put(Constants.JENKINS_BUILD_CONSOLE_KEY_WORDS_DOCKER_IMAGE, entry[1].trim().toLowerCase());
+				}
+			}
+		}
+		return result;
+		
+	}
 	
 
 

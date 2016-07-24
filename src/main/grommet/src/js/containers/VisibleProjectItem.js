@@ -21,14 +21,14 @@ function mapStateToProps(state,props) {
   
   let latestRecord4apps=Immutable.Map();
   app4curProject.forEach(appid=>{
-  	let curRecords = state.integrationRecords.filter(record=>{
+    let curRecords = state.integrationRecords.filter(record=>{
       return appid===record.get('appId');
     });
     console.log("curRecords for project",curRecords.toJS());
     var latestRecord = Immutable.Map();
     let tmp = 0;
     curRecords.forEach(record=>{
-     if(tmp<record.get('buildNo')) {
+      if(tmp<=record.get('buildNo')) {
         latestRecord=record;
         tmp=record.get('buildNo');
       }

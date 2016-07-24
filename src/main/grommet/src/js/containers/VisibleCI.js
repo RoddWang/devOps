@@ -1,6 +1,6 @@
 //import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import Immutable  from 'immutable';
 import CI from '../components/CI';
 //import * as projectItem from '../actions/projectItem';
 
@@ -14,13 +14,16 @@ function mapStateToProps(state,props) {
       var app=proj.apps[index];
     }
   }
-
+  let curRecord= state.integrationRecords.get(props.location.query.curRecordId);
+  if(!curRecord) {
+    curRecord = Immutable.Map({buildNo:-1});
+  }
 
   return {
     project: proj,
     application: app,
     buildResult:state.buildResult,
-    integrationRecord:state.integrationRecord.get(props.location.query.curRecordId)
+    integrationRecord:curRecord
   };
 }
 /*//将action的所有方法绑定到props上

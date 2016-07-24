@@ -23,10 +23,6 @@ export function createNewProjectAction(projectName) {
     .then(result => {
       console.log("CREATE_PROJECT_SUCCESS");
       return dispatch({type:CREATE_PROJECT_SUCCESS,data:result.resultData});
-    })
-    .catch(error => {
-      console.log("CREATE_PROJECT_ERROR");
-      return dispatch({type:CREATE_PROJECT_ERROR,error:error});
     });
   };
 }

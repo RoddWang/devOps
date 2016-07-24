@@ -32,9 +32,9 @@ export default class NewApplication extends Component {
   componentDidUpdate () {
     
     let {project,layer} = this.props;
-    console.log("componentDidUpdate",this.props);
+    console.log("new application componentDidUpdate",layer.toJS());
     if(layer.get('status')=='success') {
-      hashHistory.push({pathname:`/projects/application`,query:{projectId:project._id,appId:layer.get('newApp')._id}});
+      hashHistory.push({pathname:`/projects/application`,query:{projectId:project._id,appId:layer.get('newApp')._id,curRecordId:layer.get('newRecord')._id}});
     }
     
   }
@@ -48,7 +48,7 @@ export default class NewApplication extends Component {
             <Tabs initialIndex={0}>
               <Tab title="Git Hub">
                 <Form >
-                   <Header>Create Git Hub Application for project {project.name}</Header>
+                   <Header>Create Git Hub Application for Asset {project.name}</Header>
                    <fieldset>
                        <FormField htmlFor="application_name_git" label="Application Name"  >
                           <input ref="application_name_git" id="application_name_git" type="text"/>

@@ -2,10 +2,14 @@ package com.hpe.it.sharedservice.devops.platform.controler;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.UUID;
+
+
 
 
 
@@ -109,7 +113,6 @@ public class ProjectControler {
 			LOG.warn("Can not create service");
 		} else {
 			result.setStatus(Status.SUCCESS);
-			result.setResultData(app);
 			Result launchResult = integrationService.integrate(projectId,app);
 			if(!launchResult.getStatus().equals(Status.SUCCESS)){
 				result.setStatus(Status.WARNING);
@@ -118,7 +121,10 @@ public class ProjectControler {
 				result.setMsg("Create service successfully");
 				LOG.info("Create service successfully");
 			}
-			
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("app", app);
+			map.put("record", launchResult.getResultData());
+			result.setResultData(map);
 		}
 		
 		return result;
@@ -149,17 +155,14 @@ public class ProjectControler {
 	
 	@ResponseBody()
 	@RequestMapping(value = "/buildInfo")
-	public Result buildInfo(String projectId,String appId,int buildId){
-		DevOpsProject project = devOpsProjectService.getProjectById(projectId);
-		DevOpsApplication app = project.findAppById(appId);
-		
-		if(app==null){
+	public Result buildInfo(String recordId){
+		if(StringUtils.isBlank(recordId)){
 			Result result = new Result();
 			result.setStatus(Status.ERROR);
 			result.setMsg("Can not find given application");
 			return result;
 		}
-		return integrationService.queryBuildResult(app.getApplicationName(), buildId);
+		return integrationService.getIntegrationRecorByRecordId(recordId);
 	}
 	
 	@ResponseBody()
@@ -196,7 +199,7 @@ public class ProjectControler {
 	@RequestMapping(value = "/ci/appCIRecords4Project")
 	public Result integrationRecords4Project(String projectId){
 
-		if(StringUtils.isBlank(projectId)||StringUtils.isBlank(projectId)){
+		if(StringUtils.isBlank(projectId)){
 			Result result = new Result();
 			result.setStatus(Status.ERROR);
 			result.setMsg("unexpect parameters");
@@ -212,10 +215,24 @@ public class ProjectControler {
 	}
 	
 	@ResponseBody()
+	@RequestMapping(value = "/ci/allCIRecords")
+	public Result allIntegrationRecords(){
+		List<String> appIds = new ArrayList<String>();
+		List<DevOpsProject> projects = devOpsProjectService.getAllProjects();
+		for (DevOpsProject devOpsProject : projects) {
+			List<DevOpsApplication> apps = devOpsProject.getApps();
+			for (DevOpsApplication devOpsApplication : apps) {
+				appIds.add(devOpsApplication.get_id());
+			}
+		}
+		return integrationService.getIntegrationRecordsByProject(appIds);
+	}
+	
+	@ResponseBody()
 	@RequestMapping(value = "/ci/appCIRecords4App")
 	public Result integrationRecords4App(String appId){
 		
-		if(StringUtils.isBlank(appId)||StringUtils.isBlank(appId)){
+		if(StringUtils.isBlank(appId)){
 			Result result = new Result();
 			result.setStatus(Status.ERROR);
 			result.setMsg("unexpect parameters");

@@ -30,9 +30,9 @@ export default class NewProject extends Component {
     return (
     	    <Layer onClose={this.close.bind(this)} closer={true} hidden={false} align="right">
                <Form >
-                   <Header>Create New Project</Header>
+                   <Header>Create New Asset</Header>
                    <fieldset>
-                       <FormField htmlFor="project_create" label="Project Name" error={newProject.get('error')}>
+                       <FormField htmlFor="project_create" label="Asset Name" error={newProject.get('error')}>
                           <input ref="project_create" id="project_create" type="text"  name="projectName"/>
                        </FormField>
                     </fieldset>

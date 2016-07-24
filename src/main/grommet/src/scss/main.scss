@@ -3,7 +3,7 @@
     
 }
 .statusBarList>a{
-	border-width: 4px 0 0 0;
+	border-width: 0 0 4px 0;
 	border-color: transparent;
 	border-style: solid;
 }
@@ -11,6 +11,13 @@
 .statusBarList>a.active{
     border-color: #01a982;
     
+}
+.statusBarList a:not(:last-child){
+	margin-right:20px;
+}
+
+.status-bar svg{
+	margin:0 10px 0 0;
 }
 
 .quality_gate_actual{
@@ -29,7 +36,7 @@
   border: 1px solid #DCDCDC;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   transition: box-shadow 0.3s ease-in-out;
-  width:324px;
+  width:350px;
 }
 
 .rating{
@@ -83,26 +90,35 @@
 	border-bottom:none;
 }
 .ok{
-	border-left-color:rgba(239, 74, 84, 1);
+  border-left-color:rgb(1, 169, 130);
+}
+.warning{
+  border-left-color:rgb(255, 209, 68);
+}
+.critical{
+  border-left-color:rgba(239, 74, 84, 1);
 }
 
 .all-titles{
 	margin:15px 0;
 }
-.app--name svg:not(:last-child), .app--name img:not(:last-child) {
+.app--name a svg{
   margin-right: 12px;
 }
-.app--name svg,.app--name span  {
+.app--name svg,.app--name a  {
 	line-height: 24px;
 }
-.app--name span{
+.app--name a{
 	font-size:20px;
-	color: rgba(51, 51, 51,.8);
+	color: rgba(51, 51, 51,.7);
 	text-align: start;
 	font-weight: 600;
 }
 .ci--title svg,.ci--title span  {
-	line-height: 24px;
+  line-height: 24px;
+}
+.ci--title svg {
+   cursor: inherit;;
 }
 .ci--title span{
 
@@ -139,4 +155,68 @@
 }
 .continuous-title--active span{
   color: rgba(51, 51, 51,1) !important;
+}
+
+.project--title{
+  font-size: 24px;
+  color: rgba(51, 51, 51, 1);
+  text-align: start;
+  font-weight: 600;
+}
+.project--new--app a>span{
+  font-size:16px;
+}
+.cur_record{
+  background-color:rgba(51, 51, 51,0.2);
+}
+.dashboard--box{
+  width:450px;
+  height:350px;
+  border:1px solid rgba(51, 51, 51,0.2);
+}
+.dashboard--box--title{
+  font-weight:600;
+  font-size:24px;
+  margin-bottom:20px;
+}
+.dashboard--highlight{
+  color:rgba(51, 51, 51,1);
+  font-size:40px;
+  line-height:40px;
+  font-weight:600;
+}
+.dashboard--highlight .dashboard--highlight--subTitle{
+  color:rgba(51, 51, 51,1);
+  font-size:16px;
+  line-height:40px;
+  font-weight:500;	
+}
+.dashboard--box .maturity--title{
+  font-size:12px;
+  color:rgba(51, 51, 51,1);
+}
+.status--robbin{
+  height:45px;
+  color: #fff;
+}
+.status--robbin .status-icon{
+  padding:0 5px 0 5px;
+}
+.status--robbin .status-icon .status-icon__base{
+  fill: rgb(255, 255, 255);
+}
+.status--robbin--critical{
+  background-color: #F04953;
+}
+
+.status--robbin--critical  .status-icon__detail {
+  stroke: #F04953;
+  fill: #F04953;
+}
+.status--robbin--ok{
+  background-color: #01a982;
+ }
+.status--robbin--ok  .status-icon__detail {
+  stroke: #01a982;
+  fill: #01a982;
 }

@@ -33,8 +33,8 @@ export default function projectListUpdate(state = Immutable.List.of(), action) {
         }
         return false;
       });
-      state.get(modifyIndex).apps.push(action.data);
-      console.log('CREATE_APPLICATION_SUCCESS state',state);
+      state.get(modifyIndex).apps.push(action.data.app);
+      console.log('CREATE_APPLICATION_SUCCESS state',state.toJS());
       return state;
     default:
       return state;

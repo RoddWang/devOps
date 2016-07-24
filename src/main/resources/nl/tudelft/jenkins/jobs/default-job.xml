@@ -152,14 +152,12 @@ warName=`ls *.war|head -1`
 echo "START GENERATE DOCKERFILE"
 sh '${HOME}'/jenkins/generateDockerFile.sh '${warName}'  .
 echo "GENERATE DOCKERFILE COMPLETE"
-sudo docker build -t  '${JOB_NAME}'/tomcat .
-echo "kill all running related container"
-sudo docker kill $(sudo docker ps -a |grep '${JOB_NAME}'|cut -c 1-12)
-echo "remove all stoped related container"
-sudo docker rm $(sudo docker ps -a |grep '${JOB_NAME}'|cut -c 1-12)
-sudo docker run -d -p 22222:8080  '${JOB_NAME}'/tomcat
+buildDate=`date +"%Y%m%d%H%M%S"`
+echo "DOCKER_IMAGE:'${JOB_NAME}'/tomcat:$buildDate"
+sudo docker build -t  '${JOB_NAME}'/tomcat:$buildDate .
+sudo docker push '${JOB_NAME}'/tomcat:$buildDate
         </execCommand>
-        <execTimeout>120000</execTimeout>
+        <execTimeout>0</execTimeout>
         <usePty>false</usePty>
         </jenkins.plugins.publish__over__ssh.BapSshTransfer>
         </transfers>

@@ -8,7 +8,7 @@ export default function layerMsg(state=Immutable.Map({msg:null,status:INITIAL}),
       console.log("process state of layer");
       return state.set('msg',action.msg).set('status',ERROR);
     case CREATE_APPLICATION_SUCCESS:
-      return state.set('msg',"create success").set('status',SUCCESS).set('newApp',action.data);
+      return state.set('msg',"create success").set('status',SUCCESS).set('newApp',action.data.app).set('newRecord',action.data.record);
     default:
       return state;
   }

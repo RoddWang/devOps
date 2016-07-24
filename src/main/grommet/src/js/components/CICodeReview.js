@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import Box from 'grommet/components/Box';
 import Spinning from 'grommet/components/icons/Spinning';
-import Notification from 'grommet/components/Notification';
+//import Notification from 'grommet/components/Notification';
 import Heading from 'grommet/components/Heading';
+import Header from 'grommet/components/Header';
 import Meter from 'grommet/components/Meter';
 import QualityGateTitle from './QualityGateTitle';
-/*
-import Tile from 'grommet/components/Tile';*/
-/*import Menu from 'grommet/components/Menu';
-import Anchor from 'grommet/components/Anchor';
-
-import Article from 'grommet/components/Article';
-import Section from 'grommet/components/Section';*/
+import StatusRibbon from './StatusRibbon';
 export default class CICodeReview extends Component {
 
   transferRating(ratingNum) {
@@ -39,53 +34,70 @@ export default class CICodeReview extends Component {
     }
   }
   render () {
-    let {buildResult} = this.props;
-    if(buildResult.get('build').size==0) {
+    let {integrationRecord} = this.props;
+
+    if(integrationRecord.get('status')==='SPINNING') {
       return (
         <Box>
           <Spinning/>
         </Box>
       );
     }
-    let statusHead=(<Notification status="ok"  message="Quality Gate success"  />);
-    //console.log('test unit error',buildResult.get('unit_test').find(metric => metric.get('metric')==='test_errors').get('value'));
-    let errors = buildResult.get('code_review').filter( metric => metric.get('status')!='OK');
-    console.log("error",errors);
-    if(errors.size>0) {
-      statusHead=(<Notification status="critical"  message="Failed cause Quality Gate" />);
+    if(integrationRecord.get('buildNo')===-1) {
+      return (<span></span>);
     }
 
-    let files=0;
-    let ncloc=0;
-    let classes=0;
-    let functions=0;
-    let statements=0;
-    let public_api=0;
+    let buildResult = integrationRecord.get('result').get('code_review').get('measures');
+    let code_review_status=integrationRecord.get('result').get('code_review').get('status');
+    let statusHead=(<StatusRibbon status="ok"  title="Code review passed"  />);
+    
+    if(code_review_status==='ERROR') {
+      statusHead=(<StatusRibbon status="critical"  title="Code review failed" />);
+    }else if(code_review_status==='WARNING') {
+      statusHead=(<StatusRibbon status="warning"  title="Code review failed" />);
+    }
+    
+    
+    let errors = buildResult.filter( metric => {
+      if(metric.get('condition')!==undefined) {
+        if(metric.get('condition').get('level')!=='OK') {
+          return true;
+        }
+      }
+      return false;
+    });
+
+    let files=NaN;
+    let ncloc=NaN;
+    let classes=NaN;
+    let functions=NaN;
+    let statements=NaN;
+    let public_api=NaN;
    // let lines=0;
-    let blocker_violations=0;
-    let critical_violations=0;
-    let major_violations=0;
-    let minor_violations=0;
-    let info_violations=0;
+    let blocker_violations=NaN;
+    let critical_violations=NaN;
+    let major_violations=NaN;
+    let minor_violations=NaN;
+    let info_violations=NaN;
 
-    let bugs=0;
-    let new_bugs=0;
-    let reliability_rating=0;
+    let bugs=NaN;
+    let new_bugs=NaN;
+    let reliability_rating=NaN;
 
-    let comment_lines=0;
-    let comment_lines_density=0;
-    let public_documented_api_density=0;
-    let public_undocumented_api=0;
-    //let commented_out_code_lines=0;
+    let comment_lines=NaN;
+    let comment_lines_density=NaN;
+    let public_documented_api_density=NaN;
+    let public_undocumented_api=NaN;
+    //let commented_out_code_lines=NaN;
     
 
-    let duplicated_blocks=0;
-    let duplicated_files=0;
-    let duplicated_lines=0;
-    let duplicated_lines_density=0;
+    let duplicated_blocks=NaN;
+    let duplicated_files=NaN;
+    let duplicated_lines=NaN;
+    let duplicated_lines_density=NaN;
     
-    console.log("code review errors",buildResult.get('code_review').toJS());
-    buildResult.get('code_review').forEach((metric, index, array)=>{
+
+    buildResult.forEach((metric, index, array)=>{
       console.log("code_review metric",metric.toJS());
       if(metric.get('metric')==='files') {
         files=+metric.get('value');
@@ -144,15 +156,20 @@ export default class CICodeReview extends Component {
       }*/
      
     });
-    console.log("buildResult.get('code_review')",buildResult.get('code_review').toJS());
 
     let quality_gate = errors.map(errorMetric => {
-      return (<QualityGateTitle title="Security Rating" errorMetric={errorMetric}/>);
+      return (<QualityGateTitle key={errorMetric.get('metric')+"codereview"} title={errorMetric.get('metric').replace(/_/g," ")} needFix={true} errorMetric={errorMetric}/>);
     });
     return (
 			<Box  pad={{"vertical":"small"}}>
 			    {statusHead}
           {quality_gate}
+          <Box direction="row">
+          <Header >
+            Code Review
+          </Header>
+          <Box align="end">Powered by Sonar</Box>
+          </Box>
           <Box  pad={{"vertical":"small","between":"small"}} direction="row" >
             
             <Box className="metric_block"  pad="small" align="center">
@@ -165,7 +182,7 @@ export default class CICodeReview extends Component {
                   </Box>
                   <Box align="center" className="metric_parcel">
                     <span>{files}</span>
-                    <span>Fiels</span>
+                    <span>Files</span>
                   </Box>
                   <Box align="center" className="metric_parcel">
                     <span>{classes}</span>
@@ -190,7 +207,7 @@ export default class CICodeReview extends Component {
             </Box>
 
             <Box className="metric_block"  pad="small" align="center">
-              <Heading strong={true} tag="h6">Duplicatations</Heading>
+              <Heading strong={true} tag="h6">Duplications</Heading>
               <Box >
                 <Box direction="row" align="between"  pad="small">
                   <Box align="center" className="metric_parcel" >
@@ -203,7 +220,7 @@ export default class CICodeReview extends Component {
                   </Box>
                   <Box align="center" className="metric_parcel">
                     <span>{duplicated_lines}</span>
-                    <span>Duplicated liness</span>
+                    <span>Duplicated lines</span>
                   </Box>
                 </Box>
                 <Box   align="between" pad="small">

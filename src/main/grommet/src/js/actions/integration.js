@@ -1,8 +1,9 @@
 //import Rest from 'grommet/utils/Rest';
-import {URL_ALL_INTEGRATION_STATUS ,URL_INTEGRATION_RESULT} from '../constants/Constants';
+import {URL_ALL_INTEGRATION_STATUS ,URL_INTEGRATION_RESULT,TIMERS} from '../constants/Constants';
 import {URL_INTEGRATION_BUILD} from '../constants/Constants';
 import {  buildQuery ,processStatus } from 'grommet/utils/Rest';
-
+import {REFRESH_INTEGRATION_RECORD} from '../actions/integrationRecord';
+import Immutable  from 'immutable';
 export const INTEGRATION_FAILED = 'INTEGRATION_FAILED';
 export const INTEGRATION_ALLINFO='INTEGRATION_ALLINFO';
 export const INTEGRATION_RESULT='INTEGRATION_RESULT';
@@ -38,25 +39,24 @@ export function clearAllIntegrationStatus() {
 
   };
 }
-export function queryIntegrationResultByProject(projectId) {
 
-}
 
-export function queryIntegrationResult(projectId,appId,buildId) {
+export function queryIntegrationResult(recordId) {
+  console.log("queryIntegrationResult_1");
   return dispatch => {
-    const query = buildQuery({projectId:projectId,appId:appId,buildId:buildId});
+    const query = buildQuery({recordId:recordId});
     return fetch(URL_INTEGRATION_RESULT+`${query}`)
     .then(processStatus)
     .then(response => response.json())
     .then(result => {
-      
-      let buildResult = {};
-      buildResult.status=result.status;
-      buildResult.msg=result.msg;
-      buildResult.resultData={};
-      buildResult.resultData.build=eval("("+result.resultData.build+")");
-      buildResult.resultData.sonar=eval("("+result.resultData.sonar+")");
-      return dispatch({type:INTEGRATION_RESULT,data:buildResult});
+      console.log("queryIntegrationResult_2");
+      if(result.resultData.status!=='SPINNING') {
+        console.log("close timer for "+result.resultData._id);
+        clearInterval(TIMERS[result.resultData._id]);
+        let record = Immutable.List.of(Immutable.fromJS(result.resultData));
+        console.log("queryIntegrationResult",result.resultData);
+        return dispatch({type:REFRESH_INTEGRATION_RECORD,data:record});
+      }
     });
   };
 }
@@ -64,11 +64,8 @@ export function queryIntegrationResult(projectId,appId,buildId) {
 export function clearIntegrationResult() {
   return dispatch => {
     return dispatch({type:INTEGRATION_RESULT_CLEAR});
-
   };
 }
-
-
 
 export function build (projectId,appId) {
   return dispatch => {
@@ -78,8 +75,8 @@ export function build (projectId,appId) {
     .then(processStatus)
     .then(response => response.json())
     .then(result => {
-      if(result.status=='SUCCESS') {
-        return dispatch({type:INTEGRATION_BUILD_SUCCESS});
+      if(result.status=='SUCCESS'&&!TIMERS[result.resultData._id]) {
+        return dispatch({type:INTEGRATION_BUILD_SUCCESS,newRecord:result.resultData});
       }else{
         return dispatch({type:INTEGRATION_BUILD_ERROR,msg:result.msg});
       }
@@ -90,7 +87,6 @@ export function build (projectId,appId) {
     });
   };
 }
-
 
 
 

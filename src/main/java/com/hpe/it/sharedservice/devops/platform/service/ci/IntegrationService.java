@@ -63,9 +63,13 @@ public class IntegrationService {
 		StringMap<Object> lastBuild = (StringMap<Object>) jobInfo.get("lastBuild");
 		
 		//append record into mongodb
-		final int latestBuildNum = (int) Double.parseDouble(lastBuild.get("number").toString());
+		int latestBuildNum = 0;
+		if(lastBuild!=null){
+			latestBuildNum = (int) Double.parseDouble(lastBuild.get("number").toString());
+		}
+        final int  curBuildBum = latestBuildNum+1;
 		long buildId=integrationRecordDao.countRecordByAppId(app.get_id());
-		final IntegrationRecord newRecord = new IntegrationRecord(latestBuildNum+1,app.get_id(),buildId);
+		final IntegrationRecord newRecord = new IntegrationRecord(curBuildBum,app.get_id(),projectId,buildId,app.getScm().getRepoUrl());
 		newRecord.setStartUTC(TimeUtil.formatUTCTime());
 		if(integrationRecordDao.addIntegrationRecord(newRecord)){
 			ThreadPoolMgr.getPool().execute(new Runnable() {
@@ -77,7 +81,7 @@ public class IntegrationService {
 						} catch (InterruptedException e) {
 							LOG.error("can not sleep",e);
 						}
-						Result result = jenkinsService.queryBuildResult(app.getApplicationName(), latestBuildNum+1);	
+						Result result = jenkinsService.queryBuildResult(app.getApplicationName(), curBuildBum);	
 						if(Status.SUCCESS.equals(result.getStatus())){
 							//Gson gson = new Gson();
 							BasicDBObject build= gson.fromJson(result.getResultData().toString(), BasicDBObject.class);
@@ -125,8 +129,11 @@ public class IntegrationService {
 								Map<String,Object> measureGrp = distributeMeasure(allMeasures, quality_gate_details);
 								measureGrp.put("build", detectJenkinsBuildResult(build));
 								//StringMap<Object> sonarObj = (StringMap<Object>) gson.fromJson(sonar.getResultData().toString(), BasicDBObject.class).get("measures");
-								
-								newRecord.setStatus(status);
+								if(IntegrationStatus.SUCCESS.equals(status)){
+									Map<String, String> jenkinsLog= jenkinsService.jenkinsBuildConsoleAnalysis(app.getApplicationName(), newRecord.getJenkinsId());
+									newRecord.setImageName(jenkinsLog.get(Constants.JENKINS_BUILD_CONSOLE_KEY_WORDS_DOCKER_IMAGE));
+								}
+								newRecord.setStatus(estimateTotalStatus(measureGrp));
 								newRecord.setResult(measureGrp);
 								newRecord.setEndUTC(TimeUtil.formatUTCTime());
 								integrationRecordDao.updateRecord(newRecord);
@@ -139,11 +146,32 @@ public class IntegrationService {
 				}
 			});
 		}
-		
-		return jenkinsBuild;
+		Result result = new Result();
+		result.setStatus(Status.SUCCESS);
+		result.setResultData(newRecord);
+		return result;
 	}
-	
-	private Object detectJenkinsBuildResult(BasicDBObject build){
+	private IntegrationStatus estimateTotalStatus(Map<String,Object> measureGrp){
+		Result.Status code_review = ((MeasureGroup)measureGrp.get("code_review")).getStatus();
+		Result.Status security_test = ((MeasureGroup)measureGrp.get("security_test")).getStatus();
+		Result.Status unit_test = ((MeasureGroup)measureGrp.get("unit_test")).getStatus();
+		@SuppressWarnings("unchecked")
+		String build = ((Map<String, Object>)measureGrp.get("build")).get("status").toString();
+		if(Result.Status.SUCCESS.equals(code_review)
+				&&Result.Status.SUCCESS.equals(security_test)
+				&&Result.Status.SUCCESS.equals(unit_test)
+				&&build.equals("SUCCESS")) {
+			return IntegrationStatus.SUCCESS;
+		}else if(Result.Status.ERROR.equals(code_review)
+				||Result.Status.ERROR.equals(security_test)
+				||Result.Status.ERROR.equals(unit_test)
+				||build.equals("FAILURE")){
+			return IntegrationStatus.FAILURE;
+		}else{
+			return IntegrationStatus.UNSTABLE;
+		}
+	}
+	private Map<String, Object> detectJenkinsBuildResult(BasicDBObject build){
 		Map<String, Object> buildResult = new HashMap<String, Object>();
 		buildResult.put("status", build.get("result"));
 		@SuppressWarnings("unchecked")
@@ -253,6 +281,19 @@ public class IntegrationService {
 		List<IntegrationRecord> records = integrationRecordDao.getRecordsByAppIdGrp(projectId);
 		Result result = new Result(Status.SUCCESS);
 		result.setResultData(records);
+		return result;
+	}
+	
+	public Result getIntegrationRecorByRecordId(String id){
+		Result result = new Result();
+		IntegrationRecord record = integrationRecordDao.getRecordById(id);
+		if(record==null){
+			result.setStatus(Status.ERROR);
+			result.setMsg("Can no find record which record id is:"+id);
+		}else{
+			result.setResultData(record);
+			result.setStatus(Status.SUCCESS);
+		}
 		return result;
 	}
 }

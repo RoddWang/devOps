@@ -1,13 +1,18 @@
 //import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import Immutable  from 'immutable';
 import CISecurity from '../components/CISecurity';
 //import * as projectItem from '../actions/projectItem';
 
 //将state.counter绑定到props的counter
-function mapStateToProps(state) {
+function mapStateToProps(state,props) {
+  let curRecord= state.integrationRecords.get(props.location.query.curRecordId);
+  if(!curRecord) {
+    curRecord = Immutable.Map({buildNo:-1});
+  }
   return {
-    buildResult:state.buildResult
+    buildResult:state.buildResult,
+    integrationRecord:curRecord
   };
 }
 /*//将action的所有方法绑定到props上

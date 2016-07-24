@@ -9,14 +9,15 @@ import configureStore from './store/configureStore';
 import DevOpsApp from './components/DevOpsApp';
 import Setting from './components/Setting';
 import ProjectPanel from './components/ProjectPanel';
-//dddddimport Project from './components/Project';
+import VisibleHome from './containers/VisibleHome';
+import CD  from './components/CD';
 import VisibleNewApplication from './containers/VisibleNewApplication';
 import VisibleProjectList from './containers/VisibleProjectList';
 import VisibleNewProject from './containers/VisibleNewProject';
 import VisibleProject from './containers/VisibleProject';
 import VisibleApplication from './containers/VisibleApplication';
 import VisibleCI from './containers/VisibleCI';
-import VisibleCIOverview from './containers/VisibleCIOverview';
+
 import VisibleCICode from './containers/VisibleCICode';
 import VisibleCIUnitTest from './containers/VisibleCIUnitTest';
 import VisibleCICodeReview from './containers/VisibleCICodeReview';
@@ -31,23 +32,28 @@ class Main extends Component {
   <Provider store={store}>
   <Router history={hashHistory}>
     <Route path="/" component={DevOpsApp}>
+        <IndexRedirect to="/home" />
+        <Route path="home" component={VisibleHome}/>
         <Route path="projects" component={ProjectPanel} >
             <IndexRedirect to="/projects/list" />
             <Route path="list" component={VisibleProjectList}>
                 <Route path="new" component={VisibleNewProject}/>
+                <Route path="newApp" component={VisibleNewApplication}/>
             </Route>
             <Route path="project" component={VisibleProject}>
                 <Route path="newApp" component={VisibleNewApplication}/>
             </Route>
             <Route path="application" component={VisibleApplication}>
+              <IndexRedirect to="/projects/application/CI" />
               <Route path="CI" component={VisibleCI}>
-                 <Route path="overview" component={VisibleCIOverview}/>
+                 <IndexRedirect to="/projects/application/CI/code" />
                  <Route path="code" component={VisibleCICode}/>
                  <Route path="unittest" component={VisibleCIUnitTest}/>
                  <Route path="codereview" component={VisibleCICodeReview}/>
                  <Route path="security" component={VisibleCISecurity}/>
                  <Route path="build" component={VisibleCIBuild}/>
               </Route>
+              <Route path="CD" component={CD}/>
             </Route>
         </Route>
         <Route path="setting" component={Setting}/>

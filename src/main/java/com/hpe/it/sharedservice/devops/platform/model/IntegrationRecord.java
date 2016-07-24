@@ -2,21 +2,20 @@ package com.hpe.it.sharedservice.devops.platform.model;
 
 import java.util.UUID;
 
-import com.hpe.it.sharedservice.devops.platform.utils.TimeUtil;
-
-
 public class IntegrationRecord {
 	private String _id;
 	private long buildNo;
 	private int jenkinsId;
 	private String version;
+	private String repositoryUrl;
 	private String startUTC;
 	private String endUTC;
+	private String imageName;
 	private IntegrationStatus status;
 	private String appId;
+	private String projectId;
 	private Object result;
 
-	
 	public String get_id() {
 		return _id;
 	}
@@ -33,14 +32,16 @@ public class IntegrationRecord {
 		this.buildNo = buildNo;
 	}
 
-	public IntegrationRecord(int jenkinsId,String appId,long BuildNo) {
+	public IntegrationRecord(int jenkinsId,String appId,String projectId,long BuildNo,String repositoryUrl) {
 		super();
 		this._id = UUID.randomUUID().toString();
 		this.jenkinsId=jenkinsId;
 		this.status=IntegrationStatus.SPINNING;
 		this.appId=appId;
+		this.projectId = projectId;
 		//this.startUTC = TimeUtil.formatUTCTime();
 		this.buildNo=BuildNo;
+		this.repositoryUrl=repositoryUrl;
 	}
 
 	public int getJenkinsId() {
@@ -99,7 +100,31 @@ public class IntegrationRecord {
 	public void setAppId(String appId) {
 		this.appId = appId;
 	}
+
+	public String getRepositoryUrl() {
+		return repositoryUrl;
+	}
+
+	public void setRepositoryUrl(String repositoryUrl) {
+		this.repositoryUrl = repositoryUrl;
+	}
+
+	public String getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(String projectId) {
+		this.projectId = projectId;
+	}
+
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
+	}
 	
 	
-	
+
 }

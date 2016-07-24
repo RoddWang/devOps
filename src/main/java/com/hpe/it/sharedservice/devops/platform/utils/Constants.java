@@ -16,7 +16,11 @@ public class Constants {
 	public static final List<String> UNIT_TEST_METRICS = new ArrayList<String>();
 	public static final List<String> SECURITY_METRICS = new ArrayList<String>();
 	
+	public static final String JENKINS_BUILD_CONSOLE_KEY_WORDS_DOCKER_IMAGE = "DOCKER_IMAGE";
+	
+	
 	static{
+		
 		//Complexity
 		SONARQUBE_METRICS.add("complexity");
 		SONARQUBE_METRICS.add("class_complexity");

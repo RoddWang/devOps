@@ -7,6 +7,7 @@ import Header from 'grommet/components/Header';
 import Anchor from 'grommet/components/Anchor';
 import { Link } from 'react-router';
 import Box from 'grommet/components/Box';
+import Home from 'grommet/components/icons/base/Home';
 import UserSettings from 'grommet/components/icons/base/UserSettings';
 import AppIcon from 'grommet/components/icons/base/App';
 
@@ -17,10 +18,13 @@ export default class DevOpsApp extends Component {
 			<App inline={true} centered={false}>
 			    <Split fixed={false} flex="right" separator={true}>
 			        <Sidebar colorIndex="neutral-1">
-                        <Header pad={{horizontal: "medium"}}>DevOps</Header>
+                        <Header pad={{horizontal: "medium"}}>DevOps Center</Header>
                         <Menu primary={true}>
+                            <Link activeClassName="active" to="/home" > 
+                                <Anchor  tag="span" icon={<Home />} label="Home" />
+                            </Link>
                             <Link activeClassName="active" to="/projects" > 
-                                <Anchor  tag="span" icon={<AppIcon />} label="Project" />
+                                <Anchor  tag="span" icon={<AppIcon />} label="Asset" />
                             </Link>
                             <Link activeClassName="active" to="/setting">
                                 <Anchor  tag="span" icon={<UserSettings />} label="Setting" />
